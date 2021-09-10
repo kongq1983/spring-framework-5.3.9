@@ -1,0 +1,12 @@
+
+
+=========================================================================
+postProcessBeforeInitialization   postProcessAfterInitialization
+-------------------------------------------------------------------
+ApplicationContextAwareProcessor
+ConfigurationClassPostProcessor.ImportAwareBeanPostProcessor
+PostProcessorRegistrationDelegate.BeanPostProcessorChecker
+CommonAnnotationBeanPostProcessor
+AutowiredAnnotationBeanPostProcessor
+ApplicationListenerDetector
+=========================================================================

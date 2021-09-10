@@ -280,7 +280,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * <p>By default, only the BeanFactoryAware interface is ignored.
 	 * For further types to ignore, invoke this method for each type.
 	 * @see org.springframework.beans.factory.BeanFactoryAware
-	 * @see org.springframework.context.ApplicationContextAware
+	 * @see // org.springframework.context.ApplicationContextAware
 	 */
 	public void ignoreDependencyInterface(Class<?> ifc) {
 		this.ignoredDependencyInterfaces.add(ifc);
@@ -572,7 +572,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
-				try {// 循环处理MergedBeanDefinitionPostProcessor
+				try {// todo 循环处理MergedBeanDefinitionPostProcessor
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				} // CommonAnnotationBeanPostProcessor AutowiredAnnotationBeanPostProcessor ApplicationListenerDetector
 				catch (Throwable ex) {
@@ -1188,7 +1188,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
-		if (resolved) {
+		if (resolved) { //
 			if (autowireNecessary) {
 				return autowireConstructor(beanName, mbd, null, null);
 			}
@@ -1383,11 +1383,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					return; //ConfigurationClassPostProcessor.ImportAwareBeanPostProcessor CommonAnnotationBeanPostProcessor AutowiredAnnotationBeanPostProcessor
 				} // 这里3个都直接返回true
 			}
-		}
-		// todo 依赖注入
+		} // todo byName    setUserService  (beanName=userService)
+		// todo spring自带依赖注入  byType:需要setX(UserService service)方法  不是@Autowired
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 		// AUTOWIRE_BY_NAME: 1   AUTOWIRE_BY_TYPE:2  默认是0
-		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
+		int resolvedAutowireMode = mbd.getResolvedAutowireMode(); // 如果不配置，下面不会走的
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.
@@ -1795,16 +1795,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	private void invokeAwareMethods(String beanName, Object bean) {
 		if (bean instanceof Aware) {
-			if (bean instanceof BeanNameAware) {
+			if (bean instanceof BeanNameAware) { // setBeanName
 				((BeanNameAware) bean).setBeanName(beanName);
 			}
 			if (bean instanceof BeanClassLoaderAware) {
 				ClassLoader bcl = getBeanClassLoader();
-				if (bcl != null) {
+				if (bcl != null) { // setBeanClassLoader
 					((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);
 				}
 			}
-			if (bean instanceof BeanFactoryAware) {
+			if (bean instanceof BeanFactoryAware) { // 设置BeanFactory
 				((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
 			}
 		}

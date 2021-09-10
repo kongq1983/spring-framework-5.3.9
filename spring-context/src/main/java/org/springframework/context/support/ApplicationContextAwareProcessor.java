@@ -83,9 +83,9 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 				bean instanceof ResourceLoaderAware || bean instanceof ApplicationEventPublisherAware ||
 				bean instanceof MessageSourceAware || bean instanceof ApplicationContextAware ||
 				bean instanceof ApplicationStartupAware)) {
-			return bean;
+			return bean; // 不是这些接口的  直接返回bean
 		}
-
+		// 是上面这些Aware接口
 		AccessControlContext acc = null;
 
 		if (System.getSecurityManager() != null) {
@@ -99,7 +99,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 			}, acc);
 		}
 		else {
-			invokeAwareInterfaces(bean);
+			invokeAwareInterfaces(bean); //注入Aware接口
 		}
 
 		return bean;

@@ -71,7 +71,7 @@ public abstract class BeanFactoryUtils {
 		return (name != null && name.startsWith(BeanFactory.FACTORY_BEAN_PREFIX));
 	}
 
-	/**
+	/** 截取前缀&
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean
@@ -84,7 +84,7 @@ public abstract class BeanFactoryUtils {
 			return name;
 		}
 		return transformedBeanNameCache.computeIfAbsent(name, beanName -> {
-			do {
+			do { // 截取&
 				beanName = beanName.substring(BeanFactory.FACTORY_BEAN_PREFIX.length());
 			}
 			while (beanName.startsWith(BeanFactory.FACTORY_BEAN_PREFIX));

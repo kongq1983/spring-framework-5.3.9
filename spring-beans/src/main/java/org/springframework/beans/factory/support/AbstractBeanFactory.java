@@ -248,7 +248,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-
+		// 如果有&name 那么beanName就是name 有可能name是别名 就根据别名取真实的beanName
 		String beanName = transformedBeanName(name);
 		Object beanInstance;
 
@@ -275,7 +275,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			// Check if bean definition exists in this factory.
-			BeanFactory parentBeanFactory = getParentBeanFactory();
+			BeanFactory parentBeanFactory = getParentBeanFactory(); // 父BeanFactory 默认是没有的
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
@@ -313,7 +313,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) { // dependsOn!=null   先初始化其他Bean
 					for (String dep : dependsOn) {
-						if (isDependent(beanName, dep)) {
+						if (isDependent(beanName, dep)) { // depends循环依赖 会报错 希望自己创建之前，对方先创建
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
@@ -341,7 +341,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							destroySingleton(beanName);
 							throw ex;
 						}
-					});
+					}); // 创建出来是FactoryBean，然后从FactoryBean中获取Bean6
 					beanInstance = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 
