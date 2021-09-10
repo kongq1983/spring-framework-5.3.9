@@ -436,8 +436,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessAfterInitialization(result, beanName);
 			if (current == null) {
-				return result;
-			}
+				return result; // 前5个走直接返回bean 最后1个 如果bean是ApplicationListener 最后1个ApplicationListenerDetector 则会处理 否则也是返回bean
+			}//applyBeanPostProcessorsAfterInitialization
 			result = current;
 		}
 		return result;
@@ -612,7 +612,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
-			Object earlySingletonReference = getSingleton(beanName, false);
+			Object earlySingletonReference = getSingleton(beanName, false); // 如果没循环依赖 这里也是返回null
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;

@@ -121,7 +121,7 @@ public class EventListenerMethodProcessor
 	public void afterSingletonsInstantiated() {
 		ConfigurableListableBeanFactory beanFactory = this.beanFactory;
 		Assert.state(this.beanFactory != null, "No ConfigurableListableBeanFactory set");
-		String[] beanNames = beanFactory.getBeanNamesForType(Object.class);
+		String[] beanNames = beanFactory.getBeanNamesForType(Object.class); // 根据Object  就相当于获取当前Bean容器下是所有beanName
 		for (String beanName : beanNames) {
 			if (!ScopedProxyUtils.isScopedTarget(beanName)) {
 				Class<?> type = null;

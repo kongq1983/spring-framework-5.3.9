@@ -203,7 +203,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		return singletonObject;
 	}
 
-	/**
+	/** todo getSingleton主线流程
 	 * Return the (raw) singleton object registered under the given name,
 	 * creating and registering a new one if none registered yet.
 	 * @param beanName the name of the bean
