@@ -169,7 +169,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Map of singleton and non-singleton bean names, keyed by dependency type. */
 	private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
-	/** Map of singleton-only bean names, keyed by dependency type. */
+	/** Map of singleton-only bean names, keyed by dependency type. 多个bean名称 */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
 	/** List of bean definition names, in registration order. */
@@ -918,10 +918,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
 		// Trigger initialization of all non-lazy singleton beans...
-		for (String beanName : beanNames) {
-			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
-				if (isFactoryBean(beanName)) {
+		for (String beanName : beanNames) { //getMergedLocalBeanDefinition 合并父Bean中的配置，注意 <bean id="" class="" parent="" /> 中的 parent
+			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName); // todo 关注getMergedLocalBeanDefinition
+			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) { // 非抽象 & 单例 & 非懒加载
+				if (isFactoryBean(beanName)) { // 处理FactoryBean
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof FactoryBean) {
 						FactoryBean<?> factory = (FactoryBean<?>) bean;

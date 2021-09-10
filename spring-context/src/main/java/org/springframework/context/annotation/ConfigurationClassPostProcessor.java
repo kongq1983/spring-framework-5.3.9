@@ -265,8 +265,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
 
-		enhanceConfigurationClasses(beanFactory);
-		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
+		enhanceConfigurationClasses(beanFactory); //对标记@Configuration注解的类 会cblig增强
+		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory)); // 添加ImportAwareBeanPostProcessor
 	}
 
 	/**
@@ -274,8 +274,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
-		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
-		String[] candidateNames = registry.getBeanDefinitionNames();
+		List<BeanDefinitionHolder> configCandidates = new ArrayList<>(); // 标注@Configuration 列表
+		String[] candidateNames = registry.getBeanDefinitionNames(); // 从beanDefinitionNames获取 目前都是spring内置的bean定义和 AnnotationConfigApplicationContext构造传进来的annotatedClasses
 
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
@@ -467,12 +467,12 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		@Override
 		public PropertyValues postProcessProperties(@Nullable PropertyValues pvs, Object bean, String beanName) {
-			// Inject the BeanFactory before AutowiredAnnotationBeanPostProcessor's
+			// Inject the BeanFactory before AutowiredAnnotationBeanPostProcessor's // cglib加强
 			// postProcessProperties method attempts to autowire other configuration beans.
-			if (bean instanceof EnhancedConfiguration) {
+			if (bean instanceof EnhancedConfiguration) {  // EnhancedConfiguration 继承BeanFactoryAware
 				((EnhancedConfiguration) bean).setBeanFactory(this.beanFactory);
-			}
-			return pvs;
+			} //@Configuration的加强的类 访问BeanFactory 接口仅供框架内部使用，但是必须保持公开状态
+			return pvs; //@Configuration的加强的类 访问BeanFactory 接口仅供框架内部使用，但是必须保持公开状态
 		}
 
 		@Override

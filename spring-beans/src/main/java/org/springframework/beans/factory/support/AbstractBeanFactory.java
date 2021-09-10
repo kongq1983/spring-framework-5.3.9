@@ -297,7 +297,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			if (!typeCheckOnly) {
-				markBeanAsCreated(beanName);
+				markBeanAsCreated(beanName); // 往alreadyCreated添加beanName
 			}
 
 			StartupStep beanCreation = this.applicationStartup.start("spring.beans.instantiate")
@@ -311,7 +311,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Guarantee initialization of beans that the current bean depends on.
 				String[] dependsOn = mbd.getDependsOn();
-				if (dependsOn != null) {
+				if (dependsOn != null) { // dependsOn!=null   先初始化其他Bean
 					for (String dep : dependsOn) {
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
@@ -329,9 +329,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				// Create bean instance.
-				if (mbd.isSingleton()) {
+				if (mbd.isSingleton()) { // 单例
 					sharedInstance = getSingleton(beanName, () -> {
-						try {
+						try { //注意先执行getSingleton，然后通过singletonFactory.getObject()执行()-> 代码 也就是ObjectFactory
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {
@@ -590,7 +590,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 
 		// Retrieve corresponding bean definition.
-		RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+		RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName); // todo 仔细看这里
 		BeanDefinitionHolder dbd = mbd.getDecoratedDefinition();
 
 		// Setup the types that we want to match against
@@ -1134,8 +1134,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public boolean isFactoryBean(String name) throws NoSuchBeanDefinitionException {
-		String beanName = transformedBeanName(name);
-		Object beanInstance = getSingleton(beanName, false);
+		String beanName = transformedBeanName(name); // userService
+		Object beanInstance = getSingleton(beanName, false); // todo 之类调用getSingleton
 		if (beanInstance != null) {
 			return (beanInstance instanceof FactoryBean);
 		}
@@ -1383,7 +1383,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 			if (mbd == null || mbd.stale) {
 				previous = mbd;
-				if (bd.getParentName() == null) {
+				if (bd.getParentName() == null) { // 获取指定的parent
 					// Use copy of given root bean definition.
 					if (bd instanceof RootBeanDefinition) {
 						mbd = ((RootBeanDefinition) bd).cloneBeanDefinition();
@@ -1767,7 +1767,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return getTypeForFactoryBean(beanName, mbd, true).resolve();
 	}
 
-	/**
+	/** 往alreadyCreated添加beanName
 	 * Mark the specified bean as already created (or about to be created).
 	 * <p>This allows the bean factory to optimize its caching for repeated
 	 * creation of the specified bean.
