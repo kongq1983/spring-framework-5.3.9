@@ -1,6 +1,7 @@
 package com.kq.quickstart;
 
 import com.kq.quickstart.config.AppConfig;
+import com.kq.quickstart.service.AliasService;
 import com.kq.quickstart.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -18,7 +19,10 @@ public class QuickStartTest {
 
 		UserService userService = (UserService) context.getBean("userService");
 
+		AliasService aliasService = (AliasService) context.getBean("aliasService1");
+
 		userService.message();
+		aliasService.message();
 	}
 
 }

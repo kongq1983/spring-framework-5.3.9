@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Service
+//@Bean(value = "")
+//@Bean({"dataSource", "subsystemA-dataSource", "subsystemB-dataSource"})
 public class UserService {
 
 	public void message(){
