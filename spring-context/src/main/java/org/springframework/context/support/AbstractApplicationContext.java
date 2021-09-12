@@ -583,7 +583,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				finishBeanFactoryInitialization(beanFactory); // 初始化所有的 singleton beans(lazy-init 的除外）
 
 				// Last step: publish corresponding event.
-				finishRefresh(); // 最后，广播事件，ApplicationContext 初始化完成
+				finishRefresh(); // 最后，广播ContextRefreshedEvent事件，ApplicationContext 初始化完成
 			}
 
 			catch (BeansException ex) {

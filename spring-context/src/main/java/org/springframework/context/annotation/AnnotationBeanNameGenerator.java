@@ -105,7 +105,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 					Set<String> result = amd.getMetaAnnotationTypes(key);
 					return (result.isEmpty() ? Collections.emptySet() : result);
 				}); // @Service会得到 @Component 、 @Indexed
-				if (isStereotypeWithNameValue(type, metaTypes, attributes)) {
+				if (isStereotypeWithNameValue(type, metaTypes, attributes)) { // 存在注解
 					Object value = attributes.get("value");
 					if (value instanceof String) {
 						String strVal = (String) value;
