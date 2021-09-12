@@ -5,7 +5,7 @@ postProcessBeforeInitialization   postProcessAfterInitialization
 -------------------------------------------------------------------
 ApplicationContextAwareProcessor
 ConfigurationClassPostProcessor.ImportAwareBeanPostProcessor
-PostProcessorRegistrationDelegate.BeanPostProcessorChecker
+PostProcessorRegistrationDelegate.BeanPostProcessorChecker  // 校验-忽略
 CommonAnnotationBeanPostProcessor
 AutowiredAnnotationBeanPostProcessor
 ApplicationListenerDetector
