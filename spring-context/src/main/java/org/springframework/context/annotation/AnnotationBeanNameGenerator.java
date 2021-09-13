@@ -96,7 +96,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	@Nullable
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
 		AnnotationMetadata amd = annotatedDef.getMetadata();
-		Set<String> types = amd.getAnnotationTypes();
+		Set<String> types = amd.getAnnotationTypes(); //注解集合  比如:org.springframework.stereotype.Service
 		String beanName = null;
 		for (String type : types) {
 			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
@@ -104,8 +104,8 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 				Set<String> metaTypes = this.metaAnnotationTypesCache.computeIfAbsent(type, key -> {
 					Set<String> result = amd.getMetaAnnotationTypes(key);
 					return (result.isEmpty() ? Collections.emptySet() : result);
-				});
-				if (isStereotypeWithNameValue(type, metaTypes, attributes)) {
+				}); // @Service会得到 @Component 、 @Indexed
+				if (isStereotypeWithNameValue(type, metaTypes, attributes)) { // 存在注解
 					Object value = attributes.get("value");
 					if (value instanceof String) {
 						String strVal = (String) value;
@@ -167,7 +167,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		String beanClassName = definition.getBeanClassName();
 		Assert.state(beanClassName != null, "No bean class name set");
 		String shortClassName = ClassUtils.getShortName(beanClassName);
-		return Introspector.decapitalize(shortClassName);
+		return Introspector.decapitalize(shortClassName); // 处理首字母小写
 	}
 
 }

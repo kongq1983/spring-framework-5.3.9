@@ -92,7 +92,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
-
+	/**  includeFilters: 默认有@Component @ManagedBean **/
 	private final List<TypeFilter> includeFilters = new ArrayList<>();
 
 	private final List<TypeFilter> excludeFilters = new ArrayList<>();
@@ -414,10 +414,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 	private Set<BeanDefinition> scanCandidateComponents(String basePackage) {
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
-		try {
-			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
-			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
+		try { // 比如: classpath*:com/kq/quickstart/**/*.class
+			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + // classpath*:
+					resolveBasePackage(basePackage) + '/' + this.resourcePattern; // **/*.class
+			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath); // 扫描得到classpath下所有的.class文件
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
 			for (Resource resource : resources) {
@@ -427,14 +427,14 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				if (resource.isReadable()) {
 					try {
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
-						if (isCandidateComponent(metadataReader)) {
+						if (isCandidateComponent(metadataReader)) { //是否存在@Component
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 							sbd.setSource(resource);
-							if (isCandidateComponent(sbd)) {
+							if (isCandidateComponent(sbd)) { // 1: ((顶级类 || 内部静态类) && !(接口 || 抽象))   2: 抽象 && 存在Lookup注解
 								if (debugEnabled) {
 									logger.debug("Identified candidate component class: " + resource);
 								}
-								candidates.add(sbd);
+								candidates.add(sbd); //条件满足  添加到BeanDefinition
 							}
 							else {
 								if (debugEnabled) {
@@ -486,11 +486,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return whether the class qualifies as a candidate component
 	 */
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
-		for (TypeFilter tf : this.excludeFilters) {
+		for (TypeFilter tf : this.excludeFilters) { // 先排除过滤  excludeFilters有默认config的配置类 @Configuration
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return false;
 			}
-		}
+		} // includeFilters: 默认有@Component @ManagedBean
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return isConditionMatch(metadataReader);
@@ -513,7 +513,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		return !this.conditionEvaluator.shouldSkip(metadataReader.getAnnotationMetadata());
 	}
 
-	/**
+	/** 1: ((顶级类 || 内部静态类) && !(接口 || 抽象))   2: 抽象 && 存在Lookup注解
 	 * Determine whether the given bean definition qualifies as candidate.
 	 * <p>The default implementation checks whether the class is not an interface
 	 * and not dependent on an enclosing class.
@@ -523,7 +523,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
 		AnnotationMetadata metadata = beanDefinition.getMetadata();
-		return (metadata.isIndependent() && (metadata.isConcrete() ||
+		return (metadata.isIndependent() && (metadata.isConcrete() || // 抽象并且存在 Lookup注解
 				(metadata.isAbstract() && metadata.hasAnnotatedMethods(Lookup.class.getName()))));
 	}
 
