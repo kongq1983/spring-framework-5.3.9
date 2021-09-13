@@ -41,7 +41,7 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  */
 public final class CandidateComponentsIndexLoader {
 
-	/**
+	/** todo component扫描文件
 	 * The location to look for components.
 	 * <p>Can be present in multiple JAR files.
 	 */
@@ -95,7 +95,7 @@ public final class CandidateComponentsIndexLoader {
 			return null;
 		}
 
-		try {
+		try { // META-INF/spring.components
 			Enumeration<URL> urls = classLoader.getResources(COMPONENTS_RESOURCE_LOCATION);
 			if (!urls.hasMoreElements()) {
 				return null;

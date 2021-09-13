@@ -302,16 +302,16 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 
-	/**
+	/** todo componentsIndex META-INF/spring.components
 	 * Scan the class path for candidate components.
 	 * @param basePackage the package to check for annotated classes
 	 * @return a corresponding Set of autodetected bean definitions
 	 */
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
-		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
+		if (this.componentsIndex != null && indexSupportsIncludeFilters()) { // 从索引方式获得bean定义
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
-		else {
+		else { // 扫描包获得bean定义
 			return scanCandidateComponents(basePackage);
 		}
 	}
