@@ -119,7 +119,7 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 
-	/**
+	/** todo 从@Configuration加载Bean
 	 * Read {@code configurationModel}, registering bean definitions
 	 * with the registry based on its contents.
 	 */
@@ -185,9 +185,9 @@ class ConfigurationClassBeanDefinitionReader {
 	 */
 	@SuppressWarnings("deprecation")  // for RequiredAnnotationBeanPostProcessor.SKIP_REQUIRED_CHECK_ATTRIBUTE
 	private void loadBeanDefinitionsForBeanMethod(BeanMethod beanMethod) {
-		ConfigurationClass configClass = beanMethod.getConfigurationClass();
-		MethodMetadata metadata = beanMethod.getMetadata();
-		String methodName = metadata.getMethodName();
+		ConfigurationClass configClass = beanMethod.getConfigurationClass(); // bean所属的ConfigurationClass @Configuration
+		MethodMetadata metadata = beanMethod.getMetadata(); //@Bean方法的metadata
+		String methodName = metadata.getMethodName(); // 方法名称  比如: getAliasService
 
 		// Do we need to mark the bean as skipped by its condition?
 		if (this.conditionEvaluator.shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN)) {
@@ -222,18 +222,18 @@ class ConfigurationClassBeanDefinitionReader {
 
 		ConfigurationClassBeanDefinition beanDef = new ConfigurationClassBeanDefinition(configClass, metadata, beanName);
 		beanDef.setSource(this.sourceExtractor.extractSource(metadata, configClass.getResource()));
-
+		// todo 静态方法生成bean
 		if (metadata.isStatic()) { // todo 实例化  static
-			// static @Bean method
+			// todo @Bean static @Bean method
 			if (configClass.getMetadata() instanceof StandardAnnotationMetadata) {
 				beanDef.setBeanClass(((StandardAnnotationMetadata) configClass.getMetadata()).getIntrospectedClass());
-			}
+			} // beanName=aliasServer 的 beanClass= com.kq.staticbean.config.AppConfig
 			else {
 				beanDef.setBeanClassName(configClass.getMetadata().getClassName());
-			}
+			} // factoryMethodName = getAliasService
 			beanDef.setUniqueFactoryMethodName(methodName);
 		}
-		else {  //todo @Bean method
+		else {  //todo @Bean method  非静态方法
 			// instance @Bean method
 			beanDef.setFactoryBeanName(configClass.getBeanName());
 			beanDef.setUniqueFactoryMethodName(methodName);
@@ -305,10 +305,10 @@ class ConfigurationClassBeanDefinitionReader {
 		// -> allow the current bean method to override, since both are at second-pass level.
 		// However, if the bean method is an overloaded case on the same configuration class,
 		// preserve the existing bean definition.
-		if (existingBeanDef instanceof ConfigurationClassBeanDefinition) {
+		if (existingBeanDef instanceof ConfigurationClassBeanDefinition) { // 是不是在@Configuration的类中
 			ConfigurationClassBeanDefinition ccbd = (ConfigurationClassBeanDefinition) existingBeanDef;
 			if (ccbd.getMetadata().getClassName().equals(
-					beanMethod.getConfigurationClass().getMetadata().getClassName())) {
+					beanMethod.getConfigurationClass().getMetadata().getClassName())) { // 父类=com.kq.staticbean.config.AppConfig
 				if (ccbd.getFactoryMethodMetadata().getMethodName().equals(ccbd.getFactoryMethodName())) {
 					ccbd.setNonUniqueFactoryMethodName(ccbd.getFactoryMethodMetadata().getMethodName());
 				}

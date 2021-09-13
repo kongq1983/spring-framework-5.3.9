@@ -8,7 +8,9 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(value = "com.kq.quickstart")
 public class AppConfig {
 
-	@Bean({"aliasService", "aliasService1", "aliasService2"})
+
+	@Bean // 不指定 beanName=MethodName=getAliasService
+//	@Bean({"aliasService", "aliasService1", "aliasService2"})
 	public AliasService getAliasService(){
 		return new AliasService();
 	}

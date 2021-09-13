@@ -27,9 +27,9 @@ import org.springframework.core.type.MethodMetadata;
  * @since 3.1
  */
 abstract class ConfigurationMethod {
-
+	/** @Bean配置方法 */
 	protected final MethodMetadata metadata;
-
+	/** @Bean 所属配置类  */
 	protected final ConfigurationClass configurationClass;
 
 

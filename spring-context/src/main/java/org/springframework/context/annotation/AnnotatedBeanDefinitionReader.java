@@ -85,7 +85,7 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
-		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
+		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry); // 添加系统的Bean定义  ConfigurationClassPostProcessor等
 	}
 
 
@@ -257,7 +257,7 @@ public class AnnotatedBeanDefinitionReader {
 
 		abd.setInstanceSupplier(supplier);
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
-		abd.setScope(scopeMetadata.getScopeName());
+		abd.setScope(scopeMetadata.getScopeName()); // scopeName  scopedProxyMode
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);

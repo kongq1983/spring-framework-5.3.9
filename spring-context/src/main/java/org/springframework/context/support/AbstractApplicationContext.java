@@ -568,9 +568,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
-				initMessageSource();
+				initMessageSource(); // 注册Bean  messageSource : DelegatingMessageSource
 
-				// Initialize event multicaster for this context.
+				// Initialize event multicaster for this context. 注册bean  applicationEventMulticaster : SimpleApplicationEventMulticaster
 				initApplicationEventMulticaster(); // 初始化当前 ApplicationContext 的事件广播器
 
 				// Initialize other special beans in specific context subclasses.

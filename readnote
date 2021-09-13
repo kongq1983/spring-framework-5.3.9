@@ -10,3 +10,41 @@ CommonAnnotationBeanPostProcessor
 AutowiredAnnotationBeanPostProcessor
 ApplicationListenerDetector
 =========================================================================
+
+
+
+CommonAnnotationBeanPostProcessor
+AutowiredAnnotationBeanPostProcessor
+
+=========================================================================
+
+# 验证
+
+静态工厂
+ConfigurationClassBeanDefinitionReader: 226
+
+@Bean
+ConfigurationClassBeanDefinitionReader: 236
+
+
+
+prepareMethodOverrides
+
+replaceMethod
+
+@DependsOn.class depends  AbstractBeanFactory:313
+
+@Lazy
+
+ConfigurationClassBeanDefinitionReader:309
+
+=========================================================================
+
+判断beanName重名
+ClassPathBeanDefinitionScanner:287
+ClassPathBeanDefinitionScanner:344
+
+beanName重复
+
+在配置类里，2个同名会被现有的覆盖，能启动，允许第2个的时候会报错
+独立文件里

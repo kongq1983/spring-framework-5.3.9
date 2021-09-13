@@ -19,7 +19,8 @@ public class QuickStartTest {
 
 		UserService userService = (UserService) context.getBean("userService");
 
-		AliasService aliasService = (AliasService) context.getBean("aliasService1");
+//		AliasService aliasService = (AliasService) context.getBean("aliasService1");
+		AliasService aliasService = (AliasService) context.getBean("getAliasService"); // 不指定beanName
 
 		userService.message();
 		aliasService.message();

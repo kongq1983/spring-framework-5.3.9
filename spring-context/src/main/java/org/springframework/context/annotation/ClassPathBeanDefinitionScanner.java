@@ -279,11 +279,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry); // 先根据注解来生成，没设置，最后根据类名来生成
 				if (candidate instanceof AbstractBeanDefinition) { // 应用默认的值  BeanDefinitionDefaults
-					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
+					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName); // 应用默认 applyDefaults
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) { // 合并AnnotatedTypeMetadata属性
-					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
-				} // 检查spring容器中是否存在该beanName
+					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate); // 应用注解
+				} // 检查spring容器中是否存在该beanName  同名不同类型
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
@@ -333,17 +333,17 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * bean definition has been found for the specified name
 	 */
 	protected boolean checkCandidate(String beanName, BeanDefinition beanDefinition) throws IllegalStateException {
-		if (!this.registry.containsBeanDefinition(beanName)) {
+		if (!this.registry.containsBeanDefinition(beanName)) { // 不存在该 beanName
 			return true;
 		}
 		BeanDefinition existingDef = this.registry.getBeanDefinition(beanName); // 容器中拿BeanDefinition
 		BeanDefinition originatingDef = existingDef.getOriginatingBeanDefinition();
 		if (originatingDef != null) {
 			existingDef = originatingDef;
-		} // todo 是否兼容 如果兼容返回false 表示不会重新注册到spring容器   ******(抛异常 beanName相同:类型不同)
+		} // todo 是否兼容 如果兼容返回true  忽略(表示不会重新注册到spring容器)   返回false 一般 (beanName相同:类型不同)
 		if (isCompatible(beanDefinition, existingDef)) {
 			return false;
-		}
+		} // isCompatible=false 不兼容
 		throw new ConflictingBeanDefinitionException("Annotation-specified bean name '" + beanName +
 				"' for bean class [" + beanDefinition.getBeanClassName() + "] conflicts with existing, " +
 				"non-compatible bean definition of same name and class [" + existingDef.getBeanClassName() + "]");
@@ -363,8 +363,8 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	protected boolean isCompatible(BeanDefinition newDefinition, BeanDefinition existingDefinition) {
 		return (!(existingDefinition instanceof ScannedGenericBeanDefinition) ||  // explicitly registered overriding bean
 				(newDefinition.getSource() != null && newDefinition.getSource().equals(existingDefinition.getSource())) ||  // 扫描同个文件2次 scanned same file twice
-				newDefinition.equals(existingDefinition));  // 扫描相同的class2次  scanned equivalent class twice
-	}
+				newDefinition.equals(existingDefinition));  // 扫描同等class2次 (比如不同包中的class(相同包名、相同类名)) scanned equivalent class twice
+	} // newDefinition.getSource() : FileSystemSource
 
 
 	/**
