@@ -62,6 +62,8 @@ include 'debug'
 include 'static-bean-debug'
 project(':static-bean-debug').projectDir = file('debug/static-bean-debug')
 //findProject(':debug:static-bean-debug')?.name = 'static-bean-debug'
-include 'debug:beanname-repeat-debug'
-findProject(':debug:beanname-repeat-debug')?.name = 'beanname-repeat-debug'
+include 'beanname-repeat-debug'
+project(':beanname-repeat-debug').projectDir = file('debug/beanname-repeat-debug')
+// include 'debug:beanname-repeat-debug'
+// findProject(':debug:beanname-repeat-debug')?.name = 'beanname-repeat-debug'
 
