@@ -14,3 +14,11 @@ synchronized (this.beanDefinitionMap) {
     removeManualSingletonName(beanName);
 } // 上面为什么要new一个新的列表对象？  防止这里操作的时候，其他地方遍历报异常
 =================================================================================================
+
+public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry, Environment environment) {
+    this.registry = registry;
+    this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
+    AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry); // 添加系统的Bean定义  ConfigurationClassPostProcessor等
+}
+
+=================================================================================================
