@@ -1,3 +1,16 @@
 spring通过asm字节码操作库来读取类的信息、注解信息。它没有加载类，为什么不用加载类的方式?
 
 MetadtaReader读取到类信息、注解信息，来介绍如何进行判断及创建BeanDefinition，往BeanDefinition给入了哪些信息
+
+
+=================================================================================================
+DefaultListableBeanFactory.registerBeanDefinition : 1023
+synchronized (this.beanDefinitionMap) {
+    this.beanDefinitionMap.put(beanName, beanDefinition);
+    List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
+    updatedDefinitions.addAll(this.beanDefinitionNames);
+    updatedDefinitions.add(beanName);
+    this.beanDefinitionNames = updatedDefinitions;
+    removeManualSingletonName(beanName);
+} // 上面为什么要new一个新的列表对象？  防止这里操作的时候，其他地方遍历报异常
+=================================================================================================

@@ -119,7 +119,7 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 		if (this.metadataReaderCache instanceof ConcurrentMap) {
 			// No synchronization necessary...
 			MetadataReader metadataReader = this.metadataReaderCache.get(resource);
-			if (metadataReader == null) {
+			if (metadataReader == null) { // getMetadataReader = SimpleMetadataReader
 				metadataReader = super.getMetadataReader(resource);
 				this.metadataReaderCache.put(resource, metadataReader); // Resource
 			} // key: file [E:\github_project\spring-framework-5.3.9\spring-framework\kq-start\build\classes\java\main\com\kq\quickstart\QuickStartTest.class]

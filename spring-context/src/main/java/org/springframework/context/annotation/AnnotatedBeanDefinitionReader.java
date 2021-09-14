@@ -280,7 +280,7 @@ public class AnnotatedBeanDefinitionReader {
 			}
 		}
 
-		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);//下面一句 是不是进行aop代理
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
