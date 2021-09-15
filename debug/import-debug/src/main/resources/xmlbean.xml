@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="employee" class="com.kq.entity.Employee" name="employee">
+        <property name="id" value="6"/>
+        <property name="firstName" value="tom"/>
+        <property name="lastName" value="admin"/>
+    </bean>
+
+</beans>

@@ -47,9 +47,20 @@ AutowiredAnnotationBeanPostProcessor
 ApplicationListenerDetector
 =========================================================================
 
-
 CommonAnnotationBeanPostProcessor
 AutowiredAnnotationBeanPostProcessor
+=========================================================================
+
+InstantiationAwareBeanPostProcessor extends BeanPostProcessor
+SmartInstantiationAwareBeanPostProcessor extends InstantiationAwareBeanPostProcessor
+
+@Deprecated
+InstantiationAwareBeanPostProcessorAdapter implements SmartInstantiationAwareBeanPostProcessor
+
+
+MergedBeanDefinitionPostProcessor
+
+DestructionAwareBeanPostProcessor
 
 =========================================================================
 

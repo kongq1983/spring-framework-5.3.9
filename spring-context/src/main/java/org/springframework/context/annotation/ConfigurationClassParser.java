@@ -250,7 +250,7 @@ class ConfigurationClassParser {
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter); // todo import-import-import @Configuration 这里解析
 		}
 		while (sourceClass != null); // 子类处理完成 如果有返回父类，则接着处理父类 一层一层往上处理
-
+		//ImportSelector.selectImports中的，也是configClass
 		this.configurationClasses.put(configClass, configClass);
 	}
 
