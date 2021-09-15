@@ -262,13 +262,13 @@ public abstract class BeanFactoryUtils {
 			ListableBeanFactory lbf, Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
 
 		Assert.notNull(lbf, "ListableBeanFactory must not be null");
-		String[] result = lbf.getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
+		String[] result = lbf.getBeanNamesForType(type, includeNonSingletons, allowEagerInit); // 从本容器找
 		if (lbf instanceof HierarchicalBeanFactory) {
-			HierarchicalBeanFactory hbf = (HierarchicalBeanFactory) lbf;
+			HierarchicalBeanFactory hbf = (HierarchicalBeanFactory) lbf; // 从父容器找，并放入result
 			if (hbf.getParentBeanFactory() instanceof ListableBeanFactory) {
 				String[] parentResult = beanNamesForTypeIncludingAncestors(
 						(ListableBeanFactory) hbf.getParentBeanFactory(), type, includeNonSingletons, allowEagerInit);
-				result = mergeNamesWithParent(result, parentResult, hbf);
+				result = mergeNamesWithParent(result, parentResult, hbf); //合起来返回
 			}
 		}
 		return result;

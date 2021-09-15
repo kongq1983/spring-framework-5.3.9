@@ -63,3 +63,37 @@ ConfigurationClassBeanDefinitionReader
  @ImportResource 处理xml导入
 
  =========================================================================
+ StandardReflectionParameterNameDiscoverer
+ LocalVariableTableParameterNameDiscoverer
+
+ =========================================================================
+
+ @Lazy 写在属性上 ，会生成代理 : ContextAnnotationAutowireCandidateResolver
+
+ =========================================================================
+
+ DefaultListableBeanFactory.findAutowireCandidates
+
+ // 注入重要
+ DefaultListableBeanFactory.doResolveDependency : 1307
+
+
+ =========================================================================
+
+@Primary
+DefaultListableBeanFactory.determinePrimaryCandidate (@Primary)
+
+@Priority- 只能用在类上  the lowest value has the highest priority.  两个相同值，会报错
+DefaultListableBeanFactory: determineHighestPriorityCandidate  (@Priority)
+
+DefaultListableBeanFactory.doGetBeanNamesForType
+DefaultListableBeanFactory.isTypeMatch
+DefaultListableBeanFactory.resolveDependency
+DefaultListableBeanFactory.findAutowireCandidates
+DefaultListableBeanFactory.isAutowireCandidate
+=========================================================================
+
+AutowireCandidateResolver
+SimpleAutowireCandidateResolver
+GenericTypeAwareAutowireCandidateResolver
+QualifierAnnotationAutowireCandidateResolver

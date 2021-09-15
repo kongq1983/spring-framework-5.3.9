@@ -264,7 +264,7 @@ public class AnnotatedBeanDefinitionReader {
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
-					abd.setPrimary(true);
+					abd.setPrimary(true); // todo 设置setPrimary=true @Primary
 				}
 				else if (Lazy.class == qualifier) {
 					abd.setLazyInit(true);
