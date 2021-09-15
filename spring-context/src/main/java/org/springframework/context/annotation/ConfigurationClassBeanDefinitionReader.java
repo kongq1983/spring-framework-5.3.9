@@ -126,7 +126,7 @@ class ConfigurationClassBeanDefinitionReader {
 	public void loadBeanDefinitions(Set<ConfigurationClass> configurationModel) {
 		TrackedConditionEvaluator trackedConditionEvaluator = new TrackedConditionEvaluator();
 		for (ConfigurationClass configClass : configurationModel) {
-			loadBeanDefinitionsForConfigurationClass(configClass, trackedConditionEvaluator); // loadBean定义从ConfigurationClass
+			loadBeanDefinitionsForConfigurationClass(configClass, trackedConditionEvaluator); // loadBean定义从ConfigurationClass 自定义的ImportBeanDefinitionRegistrar
 		}
 	}
 
@@ -154,7 +154,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
-		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
+		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars()); // 自定义的ImportBeanDefinitionRegistrar
 	}
 
 	/**

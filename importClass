@@ -1,0 +1,65 @@
+=========================================================================
+
+ComponentScanAnnotationParser
+=========================================================================
+
+Resource
+
+=========================================================================
+
+ConfigurationClass
+SourceClass
+=========================================================================
+
+AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
+MethodMetadata extends AnnotatedTypeMetadata
+
+ClassMetadata
+
+StandardMethodMetadata implements MethodMetadata
+
+StandardClassMetadata implements ClassMetadata
+StandardAnnotationMetadata extends StandardClassMetadata implements AnnotationMetadata
+
+SimpleMethodMetadata implements MethodMetadata
+
+=========================================================================
+
+MetadataReaderFactory （SimpleMetadataReaderFactory or CachingMetadataReaderFactory）
+CachingMetadataReaderFactory extends SimpleMetadataReaderFactory
+
+MetadataReader
+SimpleMetadataReader implements MetadataReader
+
+=========================================================================
+
+PropertySource
+CompositePropertySource
+
+=========================================================================
+postProcessBeforeInitialization   postProcessAfterInitialization
+-------------------------------------------------------------------
+ApplicationContextAwareProcessor
+ConfigurationClassPostProcessor.ImportAwareBeanPostProcessor
+PostProcessorRegistrationDelegate.BeanPostProcessorChecker  // 校验-忽略
+CommonAnnotationBeanPostProcessor
+AutowiredAnnotationBeanPostProcessor
+ApplicationListenerDetector
+=========================================================================
+
+
+CommonAnnotationBeanPostProcessor
+AutowiredAnnotationBeanPostProcessor
+
+=========================================================================
+
+ConfigurationClassBeanDefinitionReader
+
+=========================================================================
+ * @see DeferredImportSelector
+ * @see Import
+ * @see ImportBeanDefinitionRegistrar
+
+ @ImportResource 处理xml导入
+
+ =========================================================================
