@@ -91,6 +91,9 @@ DefaultListableBeanFactory.isTypeMatch
 DefaultListableBeanFactory.resolveDependency
 DefaultListableBeanFactory.findAutowireCandidates
 DefaultListableBeanFactory.isAutowireCandidate
+
+
+DefaultListableBeanFactory.resolveDependency 入口-import-import
 =========================================================================
 
 AutowireCandidateResolver
