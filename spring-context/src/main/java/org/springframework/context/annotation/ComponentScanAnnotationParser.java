@@ -95,15 +95,15 @@ class ComponentScanAnnotationParser {
 
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("includeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
-				scanner.addIncludeFilter(typeFilter);
+				scanner.addIncludeFilter(typeFilter);// todo  把includeFilters添加到includeFilters
 			}
 		}
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("excludeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
-				scanner.addExcludeFilter(typeFilter);
+				scanner.addExcludeFilter(typeFilter); // todo  把excludeFilters添加到excludeFilters
 			}
 		}
-
+		// 如果lazyInit=true 则scanner.getBeanDefinitionDefaults()默认值设置true
 		boolean lazyInit = componentScan.getBoolean("lazyInit");
 		if (lazyInit) {
 			scanner.getBeanDefinitionDefaults().setLazyInit(true);
@@ -113,7 +113,7 @@ class ComponentScanAnnotationParser {
 		String[] basePackagesArray = componentScan.getStringArray("basePackages");
 		for (String pkg : basePackagesArray) {
 			String[] tokenized = StringUtils.tokenizeToStringArray(this.environment.resolvePlaceholders(pkg),
-					ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+					ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS); // ,;分隔
 			Collections.addAll(basePackages, tokenized);
 		}
 		for (Class<?> clazz : componentScan.getClassArray("basePackageClasses")) {

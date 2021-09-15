@@ -19,7 +19,7 @@ package org.springframework.context.annotation;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.util.Assert;
 
-/**
+/** scopeName  scopedProxyMode
  * Describes scope characteristics for a Spring-managed bean including the scope
  * name and the scoped-proxy behavior.
  *

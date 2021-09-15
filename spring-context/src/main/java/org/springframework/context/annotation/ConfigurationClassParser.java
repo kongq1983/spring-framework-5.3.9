@@ -226,7 +226,7 @@ class ConfigurationClassParser {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
-
+		// 不存在  直接走下面的
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
@@ -247,14 +247,14 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
-			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter); // @Configuration 这里解析
+			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter); // todo import-import-import @Configuration 这里解析
 		}
 		while (sourceClass != null);
 
 		this.configurationClasses.put(configClass, configClass);
 	}
 
-	/**
+	/** todo import-import-import 解析入口
 	 * Apply processing and build a complete {@link ConfigurationClass} by reading the
 	 * annotations, members and methods from the source class. This method can be called
 	 * multiple times as relevant sources are discovered.
@@ -266,7 +266,7 @@ class ConfigurationClassParser {
 	protected final SourceClass doProcessConfigurationClass(
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
-		// todo deal @Component
+		// todo deal @Component  内部class存在@Component
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
@@ -333,9 +333,9 @@ class ConfigurationClassParser {
 
 		// Process superclass, if any
 		if (sourceClass.getMetadata().hasSuperClass()) {
-			String superclass = sourceClass.getMetadata().getSuperClassName();
+			String superclass = sourceClass.getMetadata().getSuperClassName(); // 父类
 			if (superclass != null && !superclass.startsWith("java") &&
-					!this.knownSuperclasses.containsKey(superclass)) {
+					!this.knownSuperclasses.containsKey(superclass)) { // 父类不为空，并且父类包不是java开头的
 				this.knownSuperclasses.put(superclass, configClass);
 				// Superclass found, return its annotation metadata and recurse
 				return sourceClass.getSuperClass();
@@ -565,7 +565,7 @@ class ConfigurationClassParser {
 			this.importStack.push(configClass);
 			try {
 				for (SourceClass candidate : importCandidates) {
-					if (candidate.isAssignable(ImportSelector.class)) {
+					if (candidate.isAssignable(ImportSelector.class)) { // ImportSelector
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();
 						ImportSelector selector = ParserStrategyUtils.instantiateClass(candidateClass, ImportSelector.class,
@@ -574,16 +574,16 @@ class ConfigurationClassParser {
 						if (selectorFilter != null) {
 							exclusionFilter = exclusionFilter.or(selectorFilter);
 						}
-						if (selector instanceof DeferredImportSelector) {
+						if (selector instanceof DeferredImportSelector) { // DeferredImportSelector
 							this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
 						}
-						else {
+						else { // 普通的ImportSelector，非DeferredImportSelector
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
-							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
+							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter); // selectImports里面的对象
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);
 						}
 					}
-					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) {
+					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { // ImportBeanDefinitionRegistrar
 						// Candidate class is an ImportBeanDefinitionRegistrar ->
 						// delegate to it to register additional bean definitions
 						Class<?> candidateClass = candidate.loadClass();
@@ -592,7 +592,7 @@ class ConfigurationClassParser {
 										this.environment, this.resourceLoader, this.registry);
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
-					else {
+					else { // 既不是ImportSelector，也不是ImportBeanDefinitionRegistrar，当作@Configuration处理  比如@Import 1个普通的@Component类
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
 						this.importStack.registerImport(
@@ -666,7 +666,7 @@ class ConfigurationClassParser {
 		}
 	}
 
-	/**
+	/** @ImportSelector  classNames= { com.kq.imports.service.impl.Cat,com.kq.imports.service.impl.Dog}
 	 * Factory method to obtain a {@link SourceClass} collection from class names.
 	 */
 	private Collection<SourceClass> asSourceClasses(String[] classNames, Predicate<String> filter) throws IOException {
@@ -686,13 +686,13 @@ class ConfigurationClassParser {
 		}
 		if (className.startsWith("java")) {
 			// Never use ASM for core java types
-			try {
+			try { // 获得Class，，并封装成SourceClass
 				return new SourceClass(ClassUtils.forName(className, this.resourceLoader.getClassLoader()));
 			}
 			catch (ClassNotFoundException ex) {
 				throw new NestedIOException("Failed to load class [" + className + "]", ex);
 			}
-		}
+		} // 非java开头，走这里，一般都走这里  封装成MetadataReader，再封装SourceClass
 		return new SourceClass(this.metadataReaderFactory.getMetadataReader(className));
 	}
 

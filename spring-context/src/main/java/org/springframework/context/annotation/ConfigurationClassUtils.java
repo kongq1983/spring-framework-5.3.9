@@ -63,7 +63,7 @@ abstract class ConfigurationClassUtils {
 
 
 	private static final Log logger = LogFactory.getLog(ConfigurationClassUtils.class);
-
+	/** Component ComponentScan Import ImportResource */
 	private static final Set<String> candidateIndicators = new HashSet<>(8);
 
 	static {
@@ -123,11 +123,11 @@ abstract class ConfigurationClassUtils {
 		}
 
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
-		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
-			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
-		}
+		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) { // 存在@Configuration
+			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL); // 设置full
+		} // 非接口 Component ComponentScan Import ImportResource @Bean
 		else if (config != null || isConfigurationCandidate(metadata)) {
-			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
+			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE); // 设置lite
 		}
 		else {
 			return false;
@@ -156,14 +156,14 @@ abstract class ConfigurationClassUtils {
 		}
 
 		// Any of the typical annotations found?
-		for (String indicator : candidateIndicators) {
+		for (String indicator : candidateIndicators) { //  Component ComponentScan Import ImportResource
 			if (metadata.isAnnotated(indicator)) {
 				return true;
 			}
 		}
 
 		// Finally, let's look for @Bean methods...
-		return hasBeanMethods(metadata);
+		return hasBeanMethods(metadata); // 是否存在@Bean方法
 	}
 
 	static boolean hasBeanMethods(AnnotationMetadata metadata) {

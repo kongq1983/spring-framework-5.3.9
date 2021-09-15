@@ -274,7 +274,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
-			for (BeanDefinition candidate : candidates) {
+			for (BeanDefinition candidate : candidates) { // scopeName  scopedProxyMode
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry); // 先根据注解来生成，没设置，最后根据类名来生成

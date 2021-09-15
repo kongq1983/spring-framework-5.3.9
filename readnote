@@ -64,3 +64,30 @@ Spring 5改进了扫描和识别组件的方法，使大型项目的性能得到
 
 ==================================================================================================================
 
+import
+
+ConfigurationClassParser.processImports 处理@Import注解
+
+ * @see DeferredImportSelector
+ * @see Import
+ * @see ImportBeanDefinitionRegistrar
+
+扩展点
+ ImportSelector
+ ImportBeanDefinitionRegistrar
+
+ @ImportResource 处理xml导入
+
+
+ @Configuration
+ @Import({AnimalSelector.class , AnimalImportBeanDefinitionRegistrar.class})
+ @ImportResource("xmlbean.xml")
+ public class AnimalConfiguration {
+
+ }
+ ==================================================================================================================
+
+ImportSelector
+// Car  Dog
+String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
+Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
