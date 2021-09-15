@@ -1028,7 +1028,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					updatedDefinitions.add(beanName);
 					this.beanDefinitionNames = updatedDefinitions;
 					removeManualSingletonName(beanName);
-				}
+				} // 上面为什么要new一个新的列表对象？  防止这里操作的时候，其他地方遍历报异常
 			}
 			else {
 				// Still in startup registration phase

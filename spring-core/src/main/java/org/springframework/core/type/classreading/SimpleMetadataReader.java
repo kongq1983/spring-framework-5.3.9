@@ -26,7 +26,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.ClassMetadata;
 import org.springframework.lang.Nullable;
 
-/**
+/** 把resource通过asm读取出来信息
  * {@link MetadataReader} implementation based on an ASM
  * {@link org.springframework.asm.ClassReader}.
  *
