@@ -135,7 +135,7 @@ class BeanDefinitionValueResolver {
 		}
 		else if (value instanceof DependencyDescriptor) {
 			Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
-			Object result = this.beanFactory.resolveDependency(
+			Object result = this.beanFactory.resolveDependency( // todo inject autowired 注入
 					(DependencyDescriptor) value, this.beanName, autowiredBeanNames, this.typeConverter);
 			for (String autowiredBeanName : autowiredBeanNames) {
 				if (this.beanFactory.containsBean(autowiredBeanName)) {
