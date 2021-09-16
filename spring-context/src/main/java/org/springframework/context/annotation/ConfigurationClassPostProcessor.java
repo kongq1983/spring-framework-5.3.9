@@ -276,17 +276,17 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>(); // 标注@Configuration 列表
 		String[] candidateNames = registry.getBeanDefinitionNames(); // 从beanDefinitionNames获取 目前都是spring内置的bean定义和 AnnotationConfigApplicationContext构造传进来的annotatedClasses
-
+		// 目前除了spring内置的就是构造传进来的配置类@Configuration
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
-				if (logger.isDebugEnabled()) { // @Configuration 走这里
+				if (logger.isDebugEnabled()) { // @Configuration 已经处理过的那种
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
-			} // 非@Configuration 会走这里 比如@Component
+			} // 没设置full、lite的会先走这里，这里处理设置full、lite
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
-			}
+			} // 如果有这些注解 则返回true @Component @ComponentScan @Import @ImportResource @Bean @Configuration
 		}
 
 		// Return immediately if no @Configuration classes were found

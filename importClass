@@ -66,6 +66,13 @@ DestructionAwareBeanPostProcessor
 
 ConfigurationClassBeanDefinitionReader
 
+public AnnotationConfigApplicationContext() {
+    this.reader = new AnnotatedBeanDefinitionReader(this);
+    this.scanner = new ClassPathBeanDefinitionScanner(this);
+}
+
+如果AnnotationConfigApplicationContext构造传进来的是AnnotatedGenericBeanDefinition
+
 =========================================================================
  * @see DeferredImportSelector
  * @see Import
@@ -111,3 +118,14 @@ AutowireCandidateResolver
 SimpleAutowireCandidateResolver
 GenericTypeAwareAutowireCandidateResolver
 QualifierAnnotationAutowireCandidateResolver
+
+=========================================================================
+spring mvc :
+RequestMappingHandlerAdapter
+RequestResponseBodyMethodProcessor
+
+AbstractJackson2HttpMessageConverter.readJavaType : JsonProcessingException
+
+GenericConversionService
+
+MethodProperty:120  value = _valueDeserializer.deserialize(p, ctxt);
