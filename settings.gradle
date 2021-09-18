@@ -66,4 +66,6 @@ include 'debug:beanname-repeat-debug'
 findProject(':debug:beanname-repeat-debug')?.name = 'beanname-repeat-debug'
 include 'debug:import-debug'
 findProject(':debug:import-debug')?.name = 'import-debug'
+include 'debug:spring-di-debug'
+findProject(':debug:spring-di-debug')?.name = 'spring-di-debug'
 
