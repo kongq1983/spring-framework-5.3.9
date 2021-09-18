@@ -2,6 +2,7 @@ package com.kq.di;
 
 import com.kq.di.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2020-0630
  */
 
+@ComponentScan("com.kq.di")
 @Configuration
 public class SpringDiApplication {
 

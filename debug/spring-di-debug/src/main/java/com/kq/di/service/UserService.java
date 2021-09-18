@@ -1,6 +1,8 @@
 package com.kq.di.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,9 +11,11 @@ import org.springframework.stereotype.Service;
  * @since 2020-0630
  */
 
-@Service
+//@Service
+@Component
 public class UserService {
 
+//	@Lazy
 	@Autowired
 	private UserService userService;
 
