@@ -53,7 +53,7 @@ public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotat
 	public Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
 		return (isLazy(descriptor) ? buildLazyResolutionProxy(descriptor, beanName) : null);
 	}
-
+	// todo  check is exists @Lazy
 	protected boolean isLazy(DependencyDescriptor descriptor) {
 		for (Annotation ann : descriptor.getAnnotations()) {
 			Lazy lazy = AnnotationUtils.getAnnotation(ann, Lazy.class);

@@ -1576,7 +1576,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				// Consider self references as a final pass...
 				// but in the case of a dependency collection, not the very same bean itself.
 				for (String candidate : candidateNames) {
-					if (isSelfReference(beanName, candidate) && // 关注自己
+					if (isSelfReference(beanName, candidate) && // 自己引用 - 关注自己
 							(!(descriptor instanceof MultiElementDescriptor) || !beanName.equals(candidate)) &&
 							isAutowireCandidate(candidate, fallbackDescriptor)) {
 						addCandidateEntry(result, candidate, descriptor, requiredType);
@@ -1765,7 +1765,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				(candidateName.equals(beanName) || ObjectUtils.containsElement(getAliases(beanName), candidateName)));
 	}
 
-	/**
+	/** todo 是否自己引用
 	 * Determine whether the given beanName/candidateName pair indicates a self reference,
 	 * i.e. whether the candidate points back to the original bean or to a factory method
 	 * on the original bean.
