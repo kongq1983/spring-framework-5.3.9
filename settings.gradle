@@ -62,10 +62,12 @@ include 'debug'
 include 'static-bean-debug'
 project(':static-bean-debug').projectDir = file('debug/static-bean-debug')
 //findProject(':debug:static-bean-debug')?.name = 'static-bean-debug'
-include 'debug:beanname-repeat-debug'
-findProject(':debug:beanname-repeat-debug')?.name = 'beanname-repeat-debug'
-include 'debug:import-debug'
-findProject(':debug:import-debug')?.name = 'import-debug'
-include 'debug:spring-di-debug'
-findProject(':debug:spring-di-debug')?.name = 'spring-di-debug'
-
+include 'beanname-repeat-debug'
+//findProject(':debug:beanname-repeat-debug')?.name = 'beanname-repeat-debug'
+project(':beanname-repeat-debug').projectDir = file('debug/beanname-repeat-debug')
+include 'import-debug'
+//findProject(':debug:import-debug')?.name = 'import-debug'
+project(':import-debug').projectDir = file('debug/import-debug')
+include 'spring-di-debug'
+//findProject(':debug:spring-di-debug')?.name = 'spring-di-debug'
+project(':spring-di-debug').projectDir = file('debug/spring-di-debug')
