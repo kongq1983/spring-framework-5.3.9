@@ -120,7 +120,13 @@ DefaultListableBeanFactory.resolveDependency 入口-import-import
 AutowireCandidateResolver
 SimpleAutowireCandidateResolver
 GenericTypeAwareAutowireCandidateResolver
-QualifierAnnotationAutowireCandidateResolver
+
+SimpleAutowireCandidateResolver implements AutowireCandidateResolver
+GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCandidateResolver
+QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwareAutowireCandidateResolver
+ContextAnnotationAutowireCandidateResolver extends QualifierAnnotationAutowireCandidateResolver
+
+@Qualifier
 
 =========================================================================
 
@@ -137,3 +143,25 @@ AbstractJackson2HttpMessageConverter.readJavaType : JsonProcessingException
 GenericConversionService
 
 MethodProperty:120  value = _valueDeserializer.deserialize(p, ctxt);
+
+=========================================================================
+spring mvc :
+RequestMappingHandlerAdapter
+RequestResponseBodyMethodProcessor
+
+AbstractJackson2HttpMessageConverter.readJavaType : JsonProcessingException
+
+GenericConversionService
+
+MethodProperty:120  value = _valueDeserializer.deserialize(p, ctxt);
+
+=========================================================================
+Converter
+
+ConverterRegistry
+
+ConfigurableConversionService extends ConversionService, ConverterRegistry
+
+GenericConversionService implements ConfigurableConversionService
+
+ConverterFactory
