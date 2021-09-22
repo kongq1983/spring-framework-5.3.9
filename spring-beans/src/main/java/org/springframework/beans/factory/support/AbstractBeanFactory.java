@@ -678,13 +678,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	@Override
-	@Nullable
+	@Nullable /**  getSingleton(beanName, false) */
 	public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
 		return getType(name, true);
 	}
 
 	@Override
-	@Nullable
+	@Nullable /**  getSingleton(beanName, false) */
 	public Class<?> getType(String name, boolean allowFactoryBeanInit) throws NoSuchBeanDefinitionException {
 		String beanName = transformedBeanName(name);
 
@@ -1846,7 +1846,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
-		if (BeanFactoryUtils.isFactoryDereference(name)) {
+		if (BeanFactoryUtils.isFactoryDereference(name)) { //FactoryBean
 			if (beanInstance instanceof NullBean) {
 				return beanInstance;
 			}
@@ -1862,7 +1862,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
-		if (!(beanInstance instanceof FactoryBean)) {
+		if (!(beanInstance instanceof FactoryBean)) {  // 正常bean ，非FactoryBean直接返回
 			return beanInstance;
 		}
 

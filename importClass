@@ -96,6 +96,9 @@ public AnnotationConfigApplicationContext() {
  DefaultListableBeanFactory.doResolveDependency : 1307
 
 
+DefaultSingletonBeanRegistry:getSingleton:214 - 主线流程
+Object getSingleton(String beanName, ObjectFactory<?> singletonFactory);
+
  =========================================================================
 
 @Primary
@@ -118,6 +121,11 @@ AutowireCandidateResolver
 SimpleAutowireCandidateResolver
 GenericTypeAwareAutowireCandidateResolver
 QualifierAnnotationAutowireCandidateResolver
+
+=========================================================================
+
+//注册单例Bean
+DefaultSingletonBeanRegistry.getSingleton(String beanName, ObjectFactory<?> singletonFactory) : 214
 
 =========================================================================
 spring mvc :

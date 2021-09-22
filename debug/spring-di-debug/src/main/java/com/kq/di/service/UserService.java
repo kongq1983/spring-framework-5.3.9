@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
 //	@Lazy
-	@Autowired
-	private UserService userService;
+	@Autowired //@Autowired 根据类型匹配的
+	private UserService userService2;
 
 
 	public void message() {
 		System.out.println("this="+this);
-		System.out.println("this.userService="+this.userService);
+		System.out.println("this.userService="+this.userService2);
 	}
 
 }

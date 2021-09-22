@@ -623,7 +623,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			this.required = required;
 		}
 
-		@Override
+		@Override // todo field inject
 		protected void inject(Object bean, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 			Field field = (Field) this.member;
 			Object value;
@@ -651,7 +651,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			desc.setContainingClass(bean.getClass());
 			Set<String> autowiredBeanNames = new LinkedHashSet<>(1);
 			Assert.state(beanFactory != null, "No BeanFactory available");
-			TypeConverter typeConverter = beanFactory.getTypeConverter();
+			TypeConverter typeConverter = beanFactory.getTypeConverter(); // todo converter
 			Object value;
 			try { // todo inject autowired 注入
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
