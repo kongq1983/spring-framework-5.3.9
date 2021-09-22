@@ -606,7 +606,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 
-	/**
+	/** todo @Resource
 	 * Class representing injection information about an annotated field
 	 * or setter method, supporting the @Resource annotation.
 	 */
@@ -621,10 +621,10 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			Class<?> resourceType = resource.type();
 			this.isDefaultName = !StringUtils.hasLength(resourceName); // 未指定name isDefaultName=true
 			if (this.isDefaultName) {
-				resourceName = this.member.getName(); // 取字段、方法名称
+				resourceName = this.member.getName(); // todo 取字段、方法名称
 				if (this.member instanceof Method && resourceName.startsWith("set") && resourceName.length() > 3) {
 					resourceName = Introspector.decapitalize(resourceName.substring(3));
-				}// 如果是set方法 去掉set，首字母小写
+				}// todo 如果是set方法 去掉set，首字母小写
 			}
 			else if (embeddedValueResolver != null) { // 表达式
 				resourceName = embeddedValueResolver.resolveStringValue(resourceName);
@@ -640,14 +640,14 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			this.lookupType = resourceType;
 			String lookupValue = resource.lookup();
 			this.mappedName = (StringUtils.hasLength(lookupValue) ? lookupValue : resource.mappedName());
-			Lazy lazy = ae.getAnnotation(Lazy.class);
-			this.lazyLookup = (lazy != null && lazy.value());
-		}
+			Lazy lazy = ae.getAnnotation(Lazy.class); // 有没有@Lazy注解
+			this.lazyLookup = (lazy != null && lazy.value()); // getResourceToInject: buildLazyResourceProxy
+		} // lazyLookup=true ，会构建1个代理对象
 
 		@Override
 		protected Object getResourceToInject(Object target, @Nullable String requestingBeanName) {
-			return (this.lazyLookup ? buildLazyResourceProxy(this, requestingBeanName) :
-					getResource(this, requestingBeanName));
+			return (this.lazyLookup ? buildLazyResourceProxy(this, requestingBeanName) : // 存在@Lazy && value=true
+					getResource(this, requestingBeanName)); //没有@Lazy注解或者注解的value=false
 		}
 	}
 

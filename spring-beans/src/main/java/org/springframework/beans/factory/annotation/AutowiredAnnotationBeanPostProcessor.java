@@ -606,7 +606,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	}
 
 
-	/**
+	/** todo AutowiredFieldElement
 	 * Class representing injection information about an annotated field.
 	 */
 	private class AutowiredFieldElement extends InjectionMetadata.InjectedElement {
@@ -627,7 +627,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		protected void inject(Object bean, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 			Field field = (Field) this.member;
 			Object value;
-			if (this.cached) {
+			if (this.cached) { // 缓存过了 @See resolveFieldValue:677  prototype才会进入cache 单例不会进入
 				try { // todo inject autowired 注入
 					value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 				}
@@ -671,10 +671,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 									beanFactory.isTypeMatch(autowiredBeanName, field.getType())) {
 								cachedFieldValue = new ShortcutDependencyDescriptor( // 构造一个ShortcutDependencyDescriptor作为缓存，保存了当前filed所匹配的autowiredBeanName，而不是对应的bean对象（考虑原型bean）
 										desc, autowiredBeanName, field.getType());
-							}
-						}
+							} // 缓存的是bean的名字autowiredBeanName
+						} // 为什么缓存的不是bean，而不是beanName，因为有可能是prototype
 					}
-					this.cachedFieldValue = cachedFieldValue;
+					this.cachedFieldValue = cachedFieldValue; // 缓存ShortcutDependencyDescriptor
 					this.cached = true;
 				}
 			}
@@ -683,7 +683,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	}
 
 
-	/**
+	/** todo AutowiredMethodElement
 	 * Class representing injection information about an annotated method.
 	 */
 	private class AutowiredMethodElement extends InjectionMetadata.InjectedElement {
@@ -707,7 +707,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			}
 			Method method = (Method) this.member;
 			Object[] arguments;
-			if (this.cached) {
+			if (this.cached) { // property才会进入cache 单例不会进入
 				try {
 					arguments = resolveCachedArguments(beanName);
 				}
@@ -782,7 +782,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 										beanFactory.isTypeMatch(autowiredBeanName, paramTypes[i])) {
 									cachedMethodArguments[i] = new ShortcutDependencyDescriptor(
 											descriptors[i], autowiredBeanName, paramTypes[i]);
-								}
+								} // 缓存的是autowiredBeanName
 							}
 						}
 						this.cachedMethodArguments = cachedMethodArguments;
