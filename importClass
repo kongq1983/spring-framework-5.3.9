@@ -165,3 +165,12 @@ ConfigurableConversionService extends ConversionService, ConverterRegistry
 GenericConversionService implements ConfigurableConversionService
 
 ConverterFactory
+
+=========================================================================
+
+ConstructorResolver  构造推断
+
+AbstractAutowireCapableBeanFactory.createBeanInstance:1162 ->
+AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors:1201 ->
+AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors:258 ->
+AutowiredAnnotationBeanPostProcessor.autowireConstructor:1204 -> ConstructorResolver(this).autowireConstructor

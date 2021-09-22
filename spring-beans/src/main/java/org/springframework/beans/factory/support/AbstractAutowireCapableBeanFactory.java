@@ -1173,7 +1173,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
-		if (mbd.getFactoryMethodName() != null) { //todo  根据factoryMethodName
+		if (mbd.getFactoryMethodName() != null) { //todo  根据factoryMethodName 类内部定义@Bean
 			return instantiateUsingFactoryMethod(beanName, mbd, args); // bean里面创建别的bean  factoryMethodName 比如标注@Bean
 		}
 
@@ -1181,26 +1181,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		boolean resolved = false;  // 这种情况下，我们可以从第一次创建知道，采用无参构造函数，还是构造函数依赖注入 来完成实例化
 		boolean autowireNecessary = false;
 		if (args == null) {
-			synchronized (mbd.constructorArgumentLock) {
-				if (mbd.resolvedConstructorOrFactoryMethod != null) {
+			synchronized (mbd.constructorArgumentLock) { // 同个BeanDeinfition只解析1次
+				if (mbd.resolvedConstructorOrFactoryMethod != null) { // resolved 类似缓存
 					resolved = true;
 					autowireNecessary = mbd.constructorArgumentsResolved;
-				}
+				} // 无参-构造函数constructorArgumentsResolved=false  有参-构造函数constructorArgumentsResolved=true
 			}
 		}
-		if (resolved) { //
-			if (autowireNecessary) {
+		if (resolved) { //已经缓存了
+			if (autowireNecessary) { //有参-构造函数
 				return autowireConstructor(beanName, mbd, null, null);
 			}
-			else {
+			else { // 无构造参数-无参
 				return instantiateBean(beanName, mbd);
 			}
 		}
 		// todo 非默认构造函数
-		// Candidate constructors for autowiring?
+		// Candidate constructors for autowiring?  todo 推断构造函数  会调用AutowiredAnnotationBeanPostProcessor
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
-		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
-				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR || // 1. 多个构造函数    2. AUTOWIRE_CONSTRUCTOR:可能需要给构造函数赋值，不确定是无参构造函数
+				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) { // 3. 有构造参数变量
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 
@@ -1266,7 +1266,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return super.getObjectForBeanInstance(beanInstance, name, beanName, mbd);
 	}
 
-	/**
+	/** todo 推断构造函数
 	 * Determine candidate constructors to use for the given bean, checking all registered
 	 * {@link SmartInstantiationAwareBeanPostProcessor SmartInstantiationAwareBeanPostProcessors}.
 	 * @param beanClass the raw class of the bean
@@ -1282,7 +1282,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (beanClass != null && hasInstantiationAwareBeanPostProcessors()) {
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
 				Constructor<?>[] ctors = bp.determineCandidateConstructors(beanClass, beanName);
-				if (ctors != null) {
+				if (ctors != null) { // AutowiredAnnotationBeanPostProcessor
 					return ctors;
 				}
 			}
