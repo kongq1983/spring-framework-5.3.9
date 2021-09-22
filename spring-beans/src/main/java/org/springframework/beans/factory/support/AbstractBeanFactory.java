@@ -1340,7 +1340,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		RootBeanDefinition mbd = this.mergedBeanDefinitions.get(beanName);
 		if (mbd != null && !mbd.stale) {
 			return mbd;
-		}
+		} // getBeanDefinition(beanName)如果beanName不存在，则会报NoSuchBeanDefinitionException no such bean
 		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
 	}
 

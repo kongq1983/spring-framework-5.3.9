@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * @author kq
  * @date 2021-09-18 10:03
@@ -16,7 +18,10 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
 //	@Lazy
-	@Autowired //@Autowired 根据类型匹配的
+//	@Autowired //@Autowired 根据类型匹配的
+//	@Resource
+//	@Resource(name = "userService")
+	@Resource(name = "userService1")
 	private UserService userService2;
 
 
