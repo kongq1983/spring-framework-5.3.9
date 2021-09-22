@@ -474,7 +474,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		return pf.getProxy(classLoader);
 	}
 
-	/**
+	/** todo  @Resource
 	 * Obtain the resource object for the given name and type.
 	 * @param element the descriptor for the annotated field/method
 	 * @param requestingBeanName the name of the requesting bean
@@ -497,7 +497,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		return autowireResource(this.resourceFactory, element, requestingBeanName);
 	}
 
-	/**
+	/** todo @Resource 注入
 	 * Obtain a resource object for the given name and type through autowiring
 	 * based on the given factory.
 	 * @param factory the factory to autowire against
@@ -511,19 +511,19 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 		Object resource;
 		Set<String> autowiredBeanNames;
-		String name = element.name;
+		String name = element.name; // beanName 字段名 方法名
 
-		if (factory instanceof AutowireCapableBeanFactory) {
+		if (factory instanceof AutowireCapableBeanFactory) { // isDefaultName=false , 如果@Resource指定了name
 			AutowireCapableBeanFactory beanFactory = (AutowireCapableBeanFactory) factory;
 			DependencyDescriptor descriptor = element.getDependencyDescriptor();
 			if (this.fallbackToDefaultTypeMatch && element.isDefaultName && !factory.containsBean(name)) {
-				autowiredBeanNames = new LinkedHashSet<>(); // todo inject autowired 注入
+				autowiredBeanNames = new LinkedHashSet<>(); // todo inject autowired 注入  不存在bean，会进入这里
 				resource = beanFactory.resolveDependency(descriptor, requestingBeanName, autowiredBeanNames, null);
 				if (resource == null) {
 					throw new NoSuchBeanDefinitionException(element.getLookupType(), "No resolvable resource object");
 				}
 			}
-			else {
+			else {// @Resource指定了name，走这里
 				resource = beanFactory.resolveBeanByName(name, descriptor);
 				autowiredBeanNames = Collections.singleton(name);
 			}

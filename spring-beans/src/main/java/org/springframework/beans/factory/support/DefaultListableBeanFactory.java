@@ -851,7 +851,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						key -> new BeanDefinitionHolder(mbd, beanName, getAliases(bdName))) :
 				new BeanDefinitionHolder(mbd, beanName, getAliases(bdName)));
 		return resolver.isAutowireCandidate(holder, descriptor);
-	}
+	} // QualifierAnnotationAutowireCandidateResolver
 
 	@Override
 	public BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
@@ -1339,7 +1339,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (multipleBeans != null) {
 				return multipleBeans;
 			}
-			// 找到所有的bean key是beanName  value有可能是bean对象，有可能是beanClass
+			// 找到所有的bean key是beanName  value有可能是bean对象，有可能是beanClass  beanName=userService   descriptor=field:userService2
 			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
 			if (matchingBeans.isEmpty()) {
 				if (isRequired(descriptor)) { // required=true，抛异常
@@ -1370,7 +1370,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				// We have exactly one match.
 				Map.Entry<String, Object> entry = matchingBeans.entrySet().iterator().next();
 				autowiredBeanName = entry.getKey();
-				instanceCandidate = entry.getValue();
+				instanceCandidate = entry.getValue(); // 这里这个还是Class  比如com.kq.UserService
 			}
 
 			if (autowiredBeanNames != null) { // 记录匹配过的beanName
@@ -1543,7 +1543,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	protected Map<String, Object> findAutowireCandidates(
 			@Nullable String beanName, Class<?> requiredType, DependencyDescriptor descriptor) {
 		// 从BeanFactory中找出和requiredType所匹配的beanName，仅仅是beanName，这些bean不一定经过了实例化，只有到最终确定某个Bean了，如果这个Bean还没有实例化才会真正进行实例化
-		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
+		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors( // 先从本容器找，找不到去父容器
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = CollectionUtils.newLinkedHashMap(candidateNames.length);
 		for (Map.Entry<Class<?>, Object> classObjectEntry : this.resolvableDependencies.entrySet()) {
