@@ -619,14 +619,14 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			Resource resource = ae.getAnnotation(Resource.class);
 			String resourceName = resource.name();
 			Class<?> resourceType = resource.type();
-			this.isDefaultName = !StringUtils.hasLength(resourceName);
+			this.isDefaultName = !StringUtils.hasLength(resourceName); // 未指定name isDefaultName=true
 			if (this.isDefaultName) {
-				resourceName = this.member.getName();
+				resourceName = this.member.getName(); // 取字段、方法名称
 				if (this.member instanceof Method && resourceName.startsWith("set") && resourceName.length() > 3) {
 					resourceName = Introspector.decapitalize(resourceName.substring(3));
-				}
+				}// 如果是set方法 去掉set，首字母小写
 			}
-			else if (embeddedValueResolver != null) {
+			else if (embeddedValueResolver != null) { // 表达式
 				resourceName = embeddedValueResolver.resolveStringValue(resourceName);
 			}
 			if (Object.class != resourceType) {

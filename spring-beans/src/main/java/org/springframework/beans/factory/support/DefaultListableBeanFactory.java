@@ -1313,16 +1313,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (shortcut != null) {
 				return shortcut;
 			}
-
+			// 先得到类型
 			Class<?> type = descriptor.getDependencyType();// 获取@Value所指定的值
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
 			if (value != null) {
-				if (value instanceof String) { // 占位符
+				if (value instanceof String) { // 一般来说肯定string 占位符
 					String strVal = resolveEmbeddedValue((String) value); // 占位符填充(${})
 					BeanDefinition bd = (beanName != null && containsBean(beanName) ?
 							getMergedBeanDefinition(beanName) : null);
 					value = evaluateBeanDefinitionString(strVal, bd); // 解析Spring表达式(#{})
-				}// 将value转化为descriptor所对应的类型
+				}// todo  类型转化器:converter 将value转化为descriptor所对应的类型  类型转化器
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());
 				try {
 					return converter.convertIfNecessary(value, type, descriptor.getTypeDescriptor());
@@ -1366,7 +1366,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 				instanceCandidate = matchingBeans.get(autowiredBeanName);
 			}
-			else {
+			else { // 完全匹配  只有1个
 				// We have exactly one match.
 				Map.Entry<String, Object> entry = matchingBeans.entrySet().iterator().next();
 				autowiredBeanName = entry.getKey();
@@ -1375,10 +1375,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 			if (autowiredBeanNames != null) { // 记录匹配过的beanName
 				autowiredBeanNames.add(autowiredBeanName);
-			}
-			if (instanceCandidate instanceof Class) { // 有可能筛选出来的是某个bean的类型，此处就进行实例化
+			}// 自己注入自己  下面会进入
+			if (instanceCandidate instanceof Class) { // todo  自己注入自己 有可能筛选出来的是某个bean的类型，此处就进行实例化
 				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);
-			}
+			} // beanFactory.getBean(beanName);
 			Object result = instanceCandidate;
 			if (result instanceof NullBean) {
 				if (isRequired(descriptor)) {

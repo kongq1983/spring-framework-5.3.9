@@ -1,0 +1,36 @@
+
+@Qualifier
+QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwareAutowireCandidateResolver
+ContextAnnotationAutowireCandidateResolver extends QualifierAnnotationAutowireCandidateResolver
+
+@Primary
+DefaultListableBeanFactory.determinePrimaryCandidate
+
+@Priority- 只能用在类上  the lowest value has the highest priority.  两个相同值，会报错
+DefaultListableBeanFactory: determineHighestPriorityCandidate  (@Priority)
+
+
+@Resource
+不指定name，isDefaultName=true,则name是属性的name
+
+
+@Value
+DefaultListableBeanFactory:doResolveDependency:1318
+Environment
+
+@Value("#{userService}")
+#是注入bean
+
+@Value("${userService}")
+$是注入string，还可以类型转化器  converter
+
+@PropertySource
+
+@Configuration
+
+@Import
+@ImportSelector
+
+@Autowired
+UserService userService
+先根据类型找，然后根据名字找

@@ -41,11 +41,11 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
-/**
+/** 即将注入的特定依赖项的描述符
  * Descriptor for a specific dependency that is about to be injected.
  * Wraps a constructor parameter, a method parameter or a field,
  * allowing unified access to their metadata.
- *
+ * 包装构造函数参数、方法参数或字段，允许统一访问其元数据
  * @author Juergen Hoeller
  * @since 2.5
  */

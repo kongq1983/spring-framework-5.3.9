@@ -641,7 +641,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			}
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
-				field.set(bean, value);
+				field.set(bean, value); // 通过反射设置值
 			}
 		}
 
@@ -655,7 +655,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			Object value;
 			try { // todo inject autowired 注入
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
-			}
+			} // toto 如果是自己注入自己  和 循环注入逻辑一样
 			catch (BeansException ex) {
 				throw new UnsatisfiedDependencyException(null, beanName, new InjectionPoint(field), ex);
 			}
