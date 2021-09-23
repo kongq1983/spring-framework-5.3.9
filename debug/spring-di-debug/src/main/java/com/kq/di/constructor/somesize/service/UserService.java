@@ -2,6 +2,7 @@ package com.kq.di.constructor.somesize.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @date 2021-09-23 8:32
  * @since 2020-0630
  */
-
+@Lazy
 @Component("UserService")
 public class UserService extends ParentUserService{
 
@@ -30,9 +31,12 @@ public class UserService extends ParentUserService{
 		this.accountService = accountService;
 	}
 
+
+
+
 	@Autowired(required = false)
-	public UserService(AccountService accountService,ParentUserService parentUserService){
-		System.out.println("parentUserService:2");
+	public UserService(AccountService accountService, ChildUserService childUserService){
+		System.out.println("childUserService:3");
 		this.accountService = accountService;
 	}
 
@@ -42,10 +46,9 @@ public class UserService extends ParentUserService{
 		this.accountService = accountService;
 	}
 
-
-	@Autowired(required = false)
-	public UserService(AccountService accountService, ChildUserService childUserService){
-		System.out.println("childUserService:3");
+	@Autowired(required = false) // 这个注入会报错，ParentUserService有3个实现类(Parent、)  会忽略这个构造函数
+	public UserService(AccountService accountService,ParentUserService parentUserService){
+		System.out.println("parentUserService:2");
 		this.accountService = accountService;
 	}
 

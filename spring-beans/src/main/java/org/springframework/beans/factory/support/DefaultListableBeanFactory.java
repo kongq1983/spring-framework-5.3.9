@@ -536,7 +536,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return getBeanNamesForType(type, true, true);
 	}
 
-	@Override
+	@Override // 根据类型，得到该类型的所有实现类
 	public String[] getBeanNamesForType(@Nullable Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) { // 如果没有冻结，就根据类型去BeanFactory找，如果冻结了，可能就跳过这个if然后去缓存中去拿了
 			return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);

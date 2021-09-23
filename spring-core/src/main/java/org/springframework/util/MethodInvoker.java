@@ -307,7 +307,7 @@ public class MethodInvoker {
 	public static int getTypeDifferenceWeight(Class<?>[] paramTypes, Object[] args) {
 		int result = 0;
 		for (int i = 0; i < paramTypes.length; i++) {
-			if (!ClassUtils.isAssignableValue(paramTypes[i], args[i])) { // 参数和类型不匹配
+			if (!ClassUtils.isAssignableValue(paramTypes[i], args[i])) { // 参数和类型不匹配 比如通过getBean("",args)调用的，那有可能跟其他构造函数的参数不匹配
 				return Integer.MAX_VALUE;
 			}
 			if (args[i] != null) {

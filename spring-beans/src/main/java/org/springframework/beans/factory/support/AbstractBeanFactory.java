@@ -550,7 +550,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 			else if (!isFactoryDereference) {
-				if (typeToMatch.isInstance(beanInstance)) {
+				if (typeToMatch.isInstance(beanInstance)) { // 如果typeToMatch:是接口   beanInstance:是typeToMatch实现类 则返回true
 					// Direct match for exposed instance?
 					return true;
 				}

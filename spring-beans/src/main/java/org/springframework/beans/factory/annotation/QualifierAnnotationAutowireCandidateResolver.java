@@ -171,7 +171,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			Class<? extends Annotation> type = annotation.annotationType();
 			boolean checkMeta = true;
 			boolean fallbackToMeta = false;
-			if (isQualifier(type)) {
+			if (isQualifier(type)) { // 如果是@RoundRobin 则这里返回true 因为存在Qualifier
 				if (!checkQualifier(bdHolder, annotation, typeConverter)) {
 					fallbackToMeta = true;
 				}
@@ -242,9 +242,9 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			if (targetAnnotation == null) {
 				// Look for matching annotation on the target class
 				if (getBeanFactory() != null) {
-					try {
+					try { // 根据beanName得到class
 						Class<?> beanType = getBeanFactory().getType(bdHolder.getBeanName());
-						if (beanType != null) {
+						if (beanType != null) { // 这里得到@RoundRobin
 							targetAnnotation = AnnotationUtils.getAnnotation(ClassUtils.getUserClass(beanType), type);
 						}
 					}
