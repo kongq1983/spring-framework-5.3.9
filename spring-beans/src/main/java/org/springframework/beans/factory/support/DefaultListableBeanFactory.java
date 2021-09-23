@@ -1602,7 +1602,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		else if (containsSingleton(candidateName) || (descriptor instanceof StreamDependencyDescriptor &&
 				((StreamDependencyDescriptor) descriptor).isOrdered())) {
-			Object beanInstance = descriptor.resolveCandidate(candidateName, requiredType, this);
+ 			Object beanInstance = descriptor.resolveCandidate(candidateName, requiredType, this); // descriptor.resolveCandidate =  beanFactory.getBean(beanName)
 			candidates.put(candidateName, (beanInstance instanceof NullBean ? null : beanInstance)); // 如果没有具体的Bean，则NullBean
 		}
 		else { // 将匹配的beanName，以及beanClass存入

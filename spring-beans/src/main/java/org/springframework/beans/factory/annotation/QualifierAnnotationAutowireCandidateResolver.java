@@ -167,7 +167,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			return true;
 		}
 		SimpleTypeConverter typeConverter = new SimpleTypeConverter();
-		for (Annotation annotation : annotationsToSearch) {
+		for (Annotation annotation : annotationsToSearch) { // 比如第一个@Autowired   第2个 @Qualifier
 			Class<? extends Annotation> type = annotation.annotationType();
 			boolean checkMeta = true;
 			boolean fallbackToMeta = false;
@@ -181,9 +181,9 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			}
 			if (checkMeta) {
 				boolean foundMeta = false;
-				for (Annotation metaAnn : type.getAnnotations()) {
+				for (Annotation metaAnn : type.getAnnotations()) { // 这里的type=@RoundRobin   type.getAnnotations()就是@RoundRobin上的注解  有@Qualifier
 					Class<? extends Annotation> metaType = metaAnn.annotationType();
-					if (isQualifier(metaType)) {
+					if (isQualifier(metaType)) { // metaType是@Qualifier
 						foundMeta = true;
 						// Only accept fallback match if @Qualifier annotation has a value...
 						// Otherwise it is just a marker for a custom qualifier annotation.
@@ -242,10 +242,10 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			if (targetAnnotation == null) {
 				// Look for matching annotation on the target class
 				if (getBeanFactory() != null) {
-					try { // 根据beanName得到class
+					try { // 根据beanName得到beanClass
 						Class<?> beanType = getBeanFactory().getType(bdHolder.getBeanName());
 						if (beanType != null) { // 这里得到@RoundRobin
-							targetAnnotation = AnnotationUtils.getAnnotation(ClassUtils.getUserClass(beanType), type);
+							targetAnnotation = AnnotationUtils.getAnnotation(ClassUtils.getUserClass(beanType), type); // 从BeanClass得到Qualifier注解
 						}
 					}
 					catch (NoSuchBeanDefinitionException ex) {
@@ -268,7 +268,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 		}
 		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
 			String attributeName = entry.getKey();
-			Object expectedValue = entry.getValue();
+			Object expectedValue = entry.getValue(); // attributeName=value  则expectedValue=beanName
 			Object actualValue = null;
 			// Check qualifier first
 			if (qualifier != null) {
