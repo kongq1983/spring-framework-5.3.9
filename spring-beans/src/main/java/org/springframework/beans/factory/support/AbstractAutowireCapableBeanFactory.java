@@ -560,7 +560,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd.isSingleton()) {
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
-		if (instanceWrapper == null) { // 初始化 默认构造函数: instantiateBean
+		if (instanceWrapper == null) { // todo 初始化 默认构造函数: instantiateBean
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		Object bean = instanceWrapper.getWrappedInstance(); // todo 得到bean 循环依赖 传入的就是这个bean
@@ -598,7 +598,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try { //todo 对bean进行填充，将各个属性值注入，其中，可能存在依赖于其他bean的属性，则会递归初始依赖bean
-			populateBean(beanName, mbd, instanceWrapper);
+			populateBean(beanName, mbd, instanceWrapper); // todo 没指定byName、byType，一般主要就是处理@Resrouce、@Autowired 注解
 			exposedObject = initializeBean(beanName, exposedObject, mbd); // 处理BeanPostProcessor的before、调用InitializingBean、处理BeanPostProcessor的after、init-method调用
 		}
 		catch (Throwable ex) {
@@ -1196,12 +1196,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				return instantiateBean(beanName, mbd);
 			}
 		}
-		// todo 非默认构造函数
+		// todo 非默认构造函数  (如果是 AUTOWIRE_CONSTRUCTOR,则不确定有无参数)
 		// Candidate constructors for autowiring?  todo 推断构造函数  会调用AutowiredAnnotationBeanPostProcessor
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR || // 1. 多个构造函数    2. AUTOWIRE_CONSTRUCTOR:可能需要给构造函数赋值，不确定是无参构造函数
-				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) { // 3. 有构造参数变量
-			return autowireConstructor(beanName, mbd, ctors, args);
+				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) { // 3. 有构造参数变量，是用户自己传餐
+			return autowireConstructor(beanName, mbd, ctors, args); // args: explicit arguments to use for constructor or factory method invocation
 		}
 
 		// Preferred constructors for default construction?
@@ -1290,7 +1290,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return null;
 	}
 
-	/**
+	/** todo 默认构造函数
 	 * Instantiate the given bean using its default constructor.
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
@@ -1400,7 +1400,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 			pvs = newPvs;
 		}
-		// resolvedAutowireMode:0 直接走这里
+		// resolvedAutowireMode:0 直接走这里  上面byName、byType需要在BeanDefinition中指定
 		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
 		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
 

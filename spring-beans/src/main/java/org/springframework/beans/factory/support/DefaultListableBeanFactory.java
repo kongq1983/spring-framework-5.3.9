@@ -1243,9 +1243,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				else {
 					candidates.put(beanName, getType(beanName));
 				}
-			}
+			} // @Primary注解
 			String candidateName = determinePrimaryCandidate(candidates, requiredType.toClass());
-			if (candidateName == null) {
+			if (candidateName == null) { // @Priority注解
 				candidateName = determineHighestPriorityCandidate(candidates, requiredType.toClass());
 			}
 			if (candidateName != null) {
@@ -1257,8 +1257,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					return resolveNamedBean(candidateName, requiredType, args);
 				}
 				return new NamedBeanHolder<>(candidateName, (T) beanInstance);
-			}
-			if (!nonUniqueAsNull) {
+			} // todo 如果有多个bean 会报错
+			if (!nonUniqueAsNull) { // nonUniqueAsNull=true  如果匹配多个则返回null
 				throw new NoUniqueBeanDefinitionException(requiredType, candidates.keySet());
 			}
 		}
@@ -1370,7 +1370,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				// We have exactly one match.
 				Map.Entry<String, Object> entry = matchingBeans.entrySet().iterator().next();
 				autowiredBeanName = entry.getKey();
-				instanceCandidate = entry.getValue(); // 这里这个还是Class  比如com.kq.UserService
+				instanceCandidate = entry.getValue(); // 这里这个还是Class  比如com.kq.UserService 也有可能是对象
 			}
 
 			if (autowiredBeanNames != null) { // 记录匹配过的beanName
@@ -1603,7 +1603,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		else if (containsSingleton(candidateName) || (descriptor instanceof StreamDependencyDescriptor &&
 				((StreamDependencyDescriptor) descriptor).isOrdered())) {
 			Object beanInstance = descriptor.resolveCandidate(candidateName, requiredType, this);
-			candidates.put(candidateName, (beanInstance instanceof NullBean ? null : beanInstance));
+			candidates.put(candidateName, (beanInstance instanceof NullBean ? null : beanInstance)); // 如果没有具体的Bean，则NullBean
 		}
 		else { // 将匹配的beanName，以及beanClass存入
 			candidates.put(candidateName, getType(candidateName));

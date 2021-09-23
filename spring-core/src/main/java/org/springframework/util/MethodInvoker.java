@@ -307,12 +307,12 @@ public class MethodInvoker {
 	public static int getTypeDifferenceWeight(Class<?>[] paramTypes, Object[] args) {
 		int result = 0;
 		for (int i = 0; i < paramTypes.length; i++) {
-			if (!ClassUtils.isAssignableValue(paramTypes[i], args[i])) {
+			if (!ClassUtils.isAssignableValue(paramTypes[i], args[i])) { // 参数和类型不匹配
 				return Integer.MAX_VALUE;
 			}
 			if (args[i] != null) {
 				Class<?> paramType = paramTypes[i];
-				Class<?> superClass = args[i].getClass().getSuperclass();
+				Class<?> superClass = args[i].getClass().getSuperclass(); //获取父类
 				while (superClass != null) {
 					if (paramType.equals(superClass)) {
 						result = result + 2;

@@ -261,7 +261,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		// Let's check for lookup methods here...
 		if (!this.lookupMethodsChecked.contains(beanName)) {
 			if (AnnotationUtils.isCandidateClass(beanClass, Lookup.class)) {
-				try {
+				try { // 默认会进来
 					Class<?> targetClass = beanClass;
 					do { // 遍历targetClass中的method，查看是否写了@Lookup方法
 						ReflectionUtils.doWithLocalMethods(targetClass, method -> {
@@ -301,7 +301,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				if (candidateConstructors == null) {
 					Constructor<?>[] rawCandidates;
 					try {
-						rawCandidates = beanClass.getDeclaredConstructors();
+						rawCandidates = beanClass.getDeclaredConstructors(); // 获得该类所有的构造函数(所有范围，比如包括private)
 					}
 					catch (Throwable ex) {
 						throw new BeanCreationException(beanName,
@@ -310,11 +310,11 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					}
 					List<Constructor<?>> candidates = new ArrayList<>(rawCandidates.length);
 					Constructor<?> requiredConstructor = null; // 记录@Autowired required=true的构造函数
-					Constructor<?> defaultConstructor = null;
-					Constructor<?> primaryConstructor = BeanUtils.findPrimaryConstructor(beanClass);
+					Constructor<?> defaultConstructor = null; // 默认构造函数
+					Constructor<?> primaryConstructor = BeanUtils.findPrimaryConstructor(beanClass); // Kotlin忽略
 					int nonSyntheticConstructors = 0;
 					for (Constructor<?> candidate : rawCandidates) { // 遍历每个构造方法
-						if (!candidate.isSynthetic()) {
+						if (!candidate.isSynthetic()) { //编译器通过生成一些在源代码中不存在的synthetic方法和类的方式，实现了对private级别的字段和类的访问，从而绕开了语言限制，这可以算是一种trick。
 							nonSyntheticConstructors++; // 记录一下普通的构造方法
 						}
 						else if (primaryConstructor != null) {
@@ -341,8 +341,8 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 										". Found constructor with 'required' Autowired annotation already: " +
 										requiredConstructor);
 							}
-							boolean required = determineRequiredStatus(ann);
-							if (required) {
+							boolean required = determineRequiredStatus(ann); // @Autowired的required的值
+							if (required) { // 当前标注@Autowired，已经解析了1个required=false的@Autowired
 								if (!candidates.isEmpty()) {
 									throw new BeanCreationException(beanName,
 											"Invalid autowire-marked constructors: " + candidates +
@@ -385,7 +385,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					else { // 如果有多个有参、并且没有添加@Autowired的构造方法，是会返回空的
 						candidateConstructors = new Constructor<?>[0];
 					}
-					this.candidateConstructorsCache.put(beanClass, candidateConstructors);
+					this.candidateConstructorsCache.put(beanClass, candidateConstructors); // key: beanClass  value: 该类的构造函数列表
 				}
 			}
 		}
@@ -517,7 +517,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		return InjectionMetadata.forElements(elements, clazz);
 	}
 
-	@Nullable
+	@Nullable // 判断是否存在@Autowired、@Value注解
 	private MergedAnnotation<?> findAutowiredAnnotation(AccessibleObject ao) {
 		MergedAnnotations annotations = MergedAnnotations.from(ao);
 		for (Class<? extends Annotation> type : this.autowiredAnnotationTypes) {

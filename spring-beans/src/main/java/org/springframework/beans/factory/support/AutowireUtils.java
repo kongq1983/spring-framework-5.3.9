@@ -50,10 +50,10 @@ import org.springframework.util.ClassUtils;
  * @see AbstractAutowireCapableBeanFactory
  */
 abstract class AutowireUtils {
-
+	// public 在前，其他范围都属于同级别，级别一样，参数多的在前
 	public static final Comparator<Executable> EXECUTABLE_COMPARATOR = (e1, e2) -> {
 		int result = Boolean.compare(Modifier.isPublic(e2.getModifiers()), Modifier.isPublic(e1.getModifiers()));
-		return result != 0 ? result : Integer.compare(e2.getParameterCount(), e1.getParameterCount());
+		return result != 0 ? result : Integer.compare(e2.getParameterCount(), e1.getParameterCount()); // 级别一样，谁的参数多，谁在前
 	};
 
 

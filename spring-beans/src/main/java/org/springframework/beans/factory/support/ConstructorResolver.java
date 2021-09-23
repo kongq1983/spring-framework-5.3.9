@@ -110,7 +110,7 @@ class ConstructorResolver {
 	}
 
 
-	/**
+	/** todo 自动注入构造函数入口 import-import
 	 * "autowire constructor" (with constructor arguments by type) behavior.
 	 * Also applied if explicit constructor argument values are specified,
 	 * matching all remaining arguments with beans from the bean factory.
@@ -156,10 +156,10 @@ class ConstructorResolver {
 		// todo 一般来说 第一次走这里的 // 如果没有确定要使用的构造方法，或者确定了构造方法但是所要传入的参数值没有确定
 		if (constructorToUse == null || argsToUse == null) {
 			// Take specified constructors, if any.
-			Constructor<?>[] candidates = chosenCtors; // 如果没有指定构造方法，那就获取beanClass中的所有构造方法所谓候选者
+			Constructor<?>[] candidates = chosenCtors; // chosenCtors解析出来的一般有@Autowired注解的构造函数
 			if (candidates == null) {
 				Class<?> beanClass = mbd.getBeanClass();
-				try {
+				try { // 如果没有指定构造方法，那就获取beanClass中的所有构造方法所谓候选者
 					candidates = (mbd.isNonPublicAccessAllowed() ?
 							beanClass.getDeclaredConstructors() : beanClass.getConstructors());
 				}
@@ -172,7 +172,7 @@ class ConstructorResolver {
 			// 如果只有一个候选构造方法，并且没有指定所要使用的构造方法参数值，并且该构造方法是无参的，那就直接用这个无参构造方法进行实例化了
 			if (candidates.length == 1 && explicitArgs == null && !mbd.hasConstructorArgumentValues()) {
 				Constructor<?> uniqueCandidate = candidates[0];
-				if (uniqueCandidate.getParameterCount() == 0) {
+				if (uniqueCandidate.getParameterCount() == 0) { // 默认构造函数
 					synchronized (mbd.constructorArgumentLock) {
 						mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate;
 						mbd.constructorArgumentsResolved = true;
@@ -183,7 +183,7 @@ class ConstructorResolver {
 				}
 			}
 
-			// Need to resolve the constructor.
+			// Need to resolve the constructor. 自动构造装配 有注解  或者 没注解，有AUTOWIRE_CONSTRUCTOR(一般直接通过BeanDefinition注册)
 			boolean autowiring = (chosenCtors != null ||
 					mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 			ConstructorArgumentValues resolvedValues = null;
@@ -204,7 +204,7 @@ class ConstructorResolver {
 			Deque<UnsatisfiedDependencyException> causes = null;
 
 			for (Constructor<?> candidate : candidates) { // 遍历每个构造方法，进行筛选
-				int parameterCount = candidate.getParameterCount();
+				int parameterCount = candidate.getParameterCount(); // 构造函数-参数个数
 				// 本次遍历时，之前已经选出来了所要用的构造方法和入参对象，并且入参对象个数比当前遍历到的这个构造方法的参数个数多，则不用再遍历，退出循环
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > parameterCount) {
 					// Already found greedy constructor that can be satisfied ->
@@ -216,14 +216,14 @@ class ConstructorResolver {
 				}
 
 				ArgumentsHolder argsHolder;
-				Class<?>[] paramTypes = candidate.getParameterTypes();
+				Class<?>[] paramTypes = candidate.getParameterTypes(); // 构造函数-参数类型
 				if (resolvedValues != null) { // 如果通过BeanDefinition指定了构造方法参数值
 					try { // 如果在构造方法上使用了@ConstructorProperties，那么就直接取定义的值作为构造方法的参数名
-						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, parameterCount);
+						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, parameterCount); // 有没有ConstructorProperties注解
 						if (paramNames == null) { // 获取构造方法参数名
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
 							if (pnd != null) {
-								paramNames = pnd.getParameterNames(candidate);
+								paramNames = pnd.getParameterNames(candidate); // 构造函数参数变量名称
 							}
 						} // 根据参数类型、参数名找到对应的bean对象
 						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
@@ -248,18 +248,18 @@ class ConstructorResolver {
 					}
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
-
+				// todo  import-import-weight 计算类型权重  比如都是3个参数的构造方法  默认lenientConstructorResolution=true
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
-				if (typeDiffWeight < minTypeDiffWeight) {
+				if (typeDiffWeight < minTypeDiffWeight) { // 第一次进来minTypeDiffWeight=0
 					constructorToUse = candidate;
 					argsHolderToUse = argsHolder;
 					argsToUse = argsHolder.arguments;
 					minTypeDiffWeight = typeDiffWeight;
 					ambiguousConstructors = null;
 				}
-				else if (constructorToUse != null && typeDiffWeight == minTypeDiffWeight) {
+				else if (constructorToUse != null && typeDiffWeight == minTypeDiffWeight) { // 构造方法积分一样
 					if (ambiguousConstructors == null) {
 						ambiguousConstructors = new LinkedHashSet<>();
 						ambiguousConstructors.add(constructorToUse);
@@ -920,7 +920,7 @@ class ConstructorResolver {
 	}
 
 
-	/**
+	/** todo 构造函数参数
 	 * Private inner class for holding argument combinations.
 	 */
 	private static class ArgumentsHolder {
@@ -944,7 +944,7 @@ class ConstructorResolver {
 			this.arguments = args;
 			this.preparedArguments = args;
 		}
-
+		// todo 计算权重
 		public int getTypeDifferenceWeight(Class<?>[] paramTypes) {
 			// If valid arguments found, determine type difference weight.
 			// Try type difference weight on both the converted arguments and
@@ -968,7 +968,7 @@ class ConstructorResolver {
 			}
 			return Integer.MAX_VALUE - 1024;
 		}
-
+		// todo 构造函数解析缓存cache
 		public void storeCache(RootBeanDefinition mbd, Executable constructorOrFactoryMethod) {
 			synchronized (mbd.constructorArgumentLock) {
 				mbd.resolvedConstructorOrFactoryMethod = constructorOrFactoryMethod;

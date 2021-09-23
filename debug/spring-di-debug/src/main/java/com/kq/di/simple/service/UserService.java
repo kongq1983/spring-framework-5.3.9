@@ -1,9 +1,6 @@
-package com.kq.di.service;
+package com.kq.di.simple.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -20,8 +17,8 @@ public class UserService {
 //	@Lazy
 //	@Autowired //@Autowired 根据类型匹配的
 //	@Resource
-//	@Resource(name = "userService")
-	@Resource(name = "userService1")
+	@Resource(name = "userService")
+//	@Resource(name = "userService1")
 	private UserService userService2;
 
 

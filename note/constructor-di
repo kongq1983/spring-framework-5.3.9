@@ -1,0 +1,29 @@
+
+构造注入
+不能有2个@Autowired，其实就是required=true
+1个@Autowired，1个@Autowired(required = false),也会报错(1个true，1个false)
+1个或多个@Autowired(required = false)，这个没问题
+
+
+=====================================================================================================================================
+
+排序规则:
+如果存在多个@Autowired(required = false)
+public方法在前，都是public方法的，参数多的在前
+如果都是public，参数个数也一样，那要根据积分来决定谁在前，谁在后
+只有public和非public之分
+
+
+public static final Comparator<Executable> EXECUTABLE_COMPARATOR = (e1, e2) -> {
+   int result = Boolean.compare(Modifier.isPublic(e2.getModifiers()), Modifier.isPublic(e1.getModifiers()));
+   return result != 0 ? result : Integer.compare(e2.getParameterCount(), e1.getParameterCount()); // 级别一样，谁的参数多，谁在前
+};
+
+public static boolean isPublic(int mod) {
+    return (mod & PUBLIC) != 0;
+}
+
+public static final int PUBLIC = 0x00000001;
+
+
+=====================================================================================================================================
