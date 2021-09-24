@@ -34,3 +34,10 @@ $是注入string，还可以类型转化器  converter
 @Autowired
 UserService userService
 先根据类型找，然后根据名字找
+
+@Lazy
+
+@EventListener  : EventListenerMethodProcessor
+DefaultEventListenerFactory
+ApplicationListenerDetector
+SimpleApplicationEventMulticaster

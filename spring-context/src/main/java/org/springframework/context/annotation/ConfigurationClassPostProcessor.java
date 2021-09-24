@@ -69,7 +69,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-/**
+/** todo ConfigurationClassPostProcessor  BeanDefinitionRegistryPostProcessor
  * {@link BeanFactoryPostProcessor} used for bootstrapping processing of
  * {@link Configuration @Configuration} classes.
  *
@@ -228,7 +228,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		this.applicationStartup = applicationStartup;
 	}
 
-	/**
+	/** todo 解析类真正的入口
 	 * Derive further bean definitions from the configuration classes in the registry.
 	 */
 	@Override
@@ -277,7 +277,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>(); // 标注@Configuration 列表
 		String[] candidateNames = registry.getBeanDefinitionNames(); // 从beanDefinitionNames获取 目前都是spring内置的bean定义和 AnnotationConfigApplicationContext构造传进来的annotatedClasses
 		// 目前除了spring内置的就是构造传进来的配置类@Configuration
-		for (String beanName : candidateNames) {
+		for (String beanName : candidateNames) { // spring内置的一些Processor和本应用启动配置类
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) { // @Configuration 已经处理过的那种
@@ -285,10 +285,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				}
 			} // 没设置full、lite的会先走这里，这里处理设置full、lite
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
-				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
+				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName)); // 这里添加
 			} // 如果有这些注解 则返回true @Component @ComponentScan @Import @ImportResource @Bean @Configuration
 		}
-
+		// todo configCandidates其实就是本应用启动配置类的Bean定义
 		// Return immediately if no @Configuration classes were found
 		if (configCandidates.isEmpty()) {
 			return;

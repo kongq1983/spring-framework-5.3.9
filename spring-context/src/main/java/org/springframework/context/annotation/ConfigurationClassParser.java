@@ -351,11 +351,11 @@ class ConfigurationClassParser {
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass,
 			Predicate<String> filter) throws IOException {
-
+		// //获取配置类的嵌套内部类
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();
-		if (!memberClasses.isEmpty()) {
+		if (!memberClasses.isEmpty()) { //如果嵌套内部类存在
 			List<SourceClass> candidates = new ArrayList<>(memberClasses.size());
-			for (SourceClass memberClass : memberClasses) {
+			for (SourceClass memberClass : memberClasses) { //验证嵌套类是否是配置类 todo isConfigurationCandidate : 是否存在@Component @ComponentScan @Import @ImportResource @Bean
 				if (ConfigurationClassUtils.isConfigurationCandidate(memberClass.getMetadata()) &&
 						!memberClass.getMetadata().getClassName().equals(configClass.getMetadata().getClassName())) {
 					candidates.add(memberClass);
@@ -368,7 +368,7 @@ class ConfigurationClassParser {
 				}
 				else {
 					this.importStack.push(configClass);
-					try {
+					try { // 使用递归的方式将嵌套内部类当成普通的类来处理
 						processConfigurationClass(candidate.asConfigClass(configClass), filter);
 					}
 					finally {
@@ -983,13 +983,13 @@ class ConfigurationClassParser {
 					sourceToProcess = metadataReaderFactory.getMetadataReader(sourceClass.getName());
 				}
 			}
-
+			// 获取元数据读取器 基于ASM的解析，对于不可以解析的类也是安全的
 			// ASM-based resolution - safe for non-resolvable classes as well
 			MetadataReader sourceReader = (MetadataReader) sourceToProcess;
-			String[] memberClassNames = sourceReader.getClassMetadata().getMemberClassNames();
+			String[] memberClassNames = sourceReader.getClassMetadata().getMemberClassNames(); // 获取配置类的嵌套内部类
 			List<SourceClass> members = new ArrayList<>(memberClassNames.length);
 			for (String memberClassName : memberClassNames) {
-				try {
+				try { // 将嵌套类转换成简单的包装类，并且经过默认过滤器的过滤
 					members.add(asSourceClass(memberClassName, DEFAULT_EXCLUSION_FILTER));
 				}
 				catch (IOException ex) {

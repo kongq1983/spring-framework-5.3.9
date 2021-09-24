@@ -142,7 +142,7 @@ abstract class ConfigurationClassUtils {
 		return true;
 	}
 
-	/**
+	/** todo 是否存在@Component @ComponentScan @Import @ImportResource @Bean
 	 * Check the given metadata for a configuration class candidate
 	 * (or nested component class declared within a configuration/component class).
 	 * @param metadata the metadata of the annotated class

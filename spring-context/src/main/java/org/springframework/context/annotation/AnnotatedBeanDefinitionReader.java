@@ -233,7 +233,7 @@ public class AnnotatedBeanDefinitionReader {
 		doRegisterBean(beanClass, name, null, supplier, customizers);
 	}
 
-	/**
+	/** 给配置类注册，注册Bean定义
 	 * Register a bean from the given bean class, deriving its metadata from
 	 * class-declared annotations.
 	 * @param beanClass the class of the bean

@@ -43,7 +43,7 @@ package org.springframework.beans.factory;
  */
 public interface SmartInitializingSingleton {
 
-	/**
+	/** 最后加载非懒加载的Bean
 	 * Invoked right at the end of the singleton pre-instantiation phase,
 	 * with a guarantee that all regular singleton beans have been created
 	 * already. {@link ListableBeanFactory#getBeansOfType} calls within

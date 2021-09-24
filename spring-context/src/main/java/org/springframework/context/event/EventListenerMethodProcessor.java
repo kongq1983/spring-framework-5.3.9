@@ -151,7 +151,7 @@ public class EventListenerMethodProcessor
 						}
 					}
 					try {
-						processBean(beanName, type);
+						processBean(beanName, type); // todo 关注这里 处理@EventListener
 					}
 					catch (Throwable ex) {
 						throw new BeanInitializationException("Failed to process @EventListener " +
@@ -161,7 +161,7 @@ public class EventListenerMethodProcessor
 			}
 		}
 	}
-
+	// todo 处理@EventListener
 	private void processBean(final String beanName, final Class<?> targetType) {
 		if (!this.nonAnnotatedClasses.contains(targetType) &&
 				AnnotationUtils.isCandidateClass(targetType, EventListener.class) &&
