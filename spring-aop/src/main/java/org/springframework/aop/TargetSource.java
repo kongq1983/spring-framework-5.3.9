@@ -35,7 +35,7 @@ import org.springframework.lang.Nullable;
  */
 public interface TargetSource extends TargetClassAware {
 
-	/**
+	/** 被代理对象的Class
 	 * Return the type of targets returned by this {@link TargetSource}.
 	 * <p>Can return {@code null}, although certain usages of a {@code TargetSource}
 	 * might just work with a predetermined target class.
@@ -54,7 +54,7 @@ public interface TargetSource extends TargetClassAware {
 	 */
 	boolean isStatic();
 
-	/**
+	/** 被代理对象-原始对象
 	 * Return a target instance. Invoked immediately before the
 	 * AOP framework calls the "target" of an AOP method invocation.
 	 * @return the target object which contains the joinpoint,

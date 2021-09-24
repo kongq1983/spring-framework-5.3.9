@@ -1,0 +1,25 @@
+
+
+@Import(AspectJAutoProxyRegistrar.class)
+public @interface EnableAspectJAutoProxy { }
+
+beanName: org.springframework.aop.config.internalAutoProxyCreator
+
+
+==================================================================================================
+public final class ExposeInvocationInterceptor implements MethodInterceptor, PriorityOrdered
+
+public class AspectJAroundAdvice extends AbstractAspectJAdvice implements MethodInterceptor
+
+==================================================================================================
+
+ConfigurationClassEnhancer
+
+
+ConfigurationClassPostProcessor:processConfigBeanDefinitions:276
+
+==================================================================================================
+
+AbstractAdvisorAutoProxyCreator: findEligibleAdvisors : 95  (import)
+
+PointcutAdvisor

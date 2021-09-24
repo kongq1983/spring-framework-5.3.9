@@ -428,7 +428,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return result;
 	}
 
-	@Override
+	@Override // todo 如果有aop  这里会 AnnotationAwareAspectJAutoProxyCreator 会cglib代理
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
 
@@ -438,7 +438,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (current == null) {
 				return result; // 前5个走直接返回bean 最后1个 如果bean是ApplicationListener 最后1个ApplicationListenerDetector 则会处理 否则也是返回bean
 			}//applyBeanPostProcessorsAfterInitialization
-			result = current;
+			result = current; // 如果有aop 则第4个位置是AnnotationAwareAspectJAutoProxyCreator
 		}
 		return result;
 	}
@@ -579,10 +579,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 							"Post-processing of merged bean definition failed", ex);
 				}
-				mbd.postProcessed = true;
+				mbd.postProcessed = true; // todo 缓存标记
 			}
 		}
-		// 单例 &  allowCircularReferences=true & 正在创建种的bean
+		// todo 单例 &  allowCircularReferences=true & 正在创建种的bean
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
@@ -966,7 +966,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
 				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
 			} // 默认只有SmartInstantiationAwareBeanPostProcessor，直接返回true
-		}
+		} // aop : AnnotationAwareAspectJAutoProxyCreator (AbstractAutoProxyCreator)
 		return exposedObject;
 	}
 
@@ -1140,7 +1140,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
 		for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
-			if (result != null) {
+			if (result != null) { // 如果是@Aspect 则AbstractAutoProxyCreator会把该beanName的cacheKey放入advisedBeans，并返回null
 				return result;
 			}
 		}

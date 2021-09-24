@@ -89,7 +89,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 */
 	private List<Class<?>> interfaces = new ArrayList<>();
 
-	/**
+	/** 匹配的Advisors
 	 * List of Advisors. If an Advice is added, it will be wrapped
 	 * in an Advisor before being added to this List.
 	 */
@@ -459,14 +459,14 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Determine a list of {@link org.aopalliance.intercept.MethodInterceptor} objects
 	 * for the given method, based on this configuration.
-	 * @param method the proxied method
+	 * @param method the proxied method 被代理对象方法
 	 * @param targetClass the target class
 	 * @return a List of MethodInterceptors (may also include InterceptorAndDynamicMethodMatchers)
 	 */
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class<?> targetClass) {
 		MethodCacheKey cacheKey = new MethodCacheKey(method);
 		List<Object> cached = this.methodCache.get(cacheKey);
-		if (cached == null) {
+		if (cached == null) { // 如果没缓存，先缓存
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
 			this.methodCache.put(cacheKey, cached);

@@ -71,3 +71,6 @@ project(':import-debug').projectDir = file('debug/import-debug')
 include 'spring-di-debug'
 //findProject(':debug:spring-di-debug')?.name = 'spring-di-debug'
 project(':spring-di-debug').projectDir = file('debug/spring-di-debug')
+include 'debug:spring-aop-debug'
+findProject(':debug:spring-aop-debug')?.name = 'spring-aop-debug'
+

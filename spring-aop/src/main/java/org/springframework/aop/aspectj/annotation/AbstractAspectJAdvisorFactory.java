@@ -69,7 +69,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	protected final ParameterNameDiscoverer parameterNameDiscoverer = new AspectJAnnotationParameterNameDiscoverer();
 
 
-	/**
+	/** todo 是否存在Aspect
 	 * We consider something to be an AspectJ aspect suitable for use by the Spring AOP system
 	 * if it has the @Aspect annotation, and was not compiled by ajc. The reason for this latter test
 	 * is that aspects written in the code-style (AspectJ language) also have the annotation present
@@ -79,7 +79,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	public boolean isAspect(Class<?> clazz) {
 		return (hasAspectAnnotation(clazz) && !compiledByAjc(clazz));
 	}
-
+	// todo 是否存在Aspect
 	private boolean hasAspectAnnotation(Class<?> clazz) {
 		return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null);
 	}

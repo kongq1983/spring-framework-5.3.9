@@ -265,7 +265,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
 
-		enhanceConfigurationClasses(beanFactory); //对标记@Configuration注解的类 会cblig增强
+		enhanceConfigurationClasses(beanFactory); //todo 对标记@Configuration注解的类 会cblig增强
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory)); // 添加ImportAwareBeanPostProcessor
 	}
 
@@ -378,7 +378,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 	}
 
-	/**
+	/** todo cglib增强
 	 * Post-processes a BeanFactory in search of Configuration class BeanDefinitions;
 	 * any candidates are then enhanced by a {@link ConfigurationClassEnhancer}.
 	 * Candidate status is determined by BeanDefinition attribute metadata.
@@ -389,10 +389,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
-			Object configClassAttr = beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE);
+			Object configClassAttr = beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE); // full or lite or null
 			AnnotationMetadata annotationMetadata = null;
 			MethodMetadata methodMetadata = null;
-			if (beanDef instanceof AnnotatedBeanDefinition) {
+			if (beanDef instanceof AnnotatedBeanDefinition) { // RootBeanDefinition:框架  注解都是AnnotatedBeanDefinition
 				AnnotatedBeanDefinition annotatedBeanDefinition = (AnnotatedBeanDefinition) beanDef;
 				annotationMetadata = annotatedBeanDefinition.getMetadata();
 				methodMetadata = annotatedBeanDefinition.getFactoryMethodMetadata();
@@ -417,7 +417,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					}
 				}
 			}
-			if (ConfigurationClassUtils.CONFIGURATION_CLASS_FULL.equals(configClassAttr)) {
+			if (ConfigurationClassUtils.CONFIGURATION_CLASS_FULL.equals(configClassAttr)) { // 是否full
 				if (!(beanDef instanceof AbstractBeanDefinition)) {
 					throw new BeanDefinitionStoreException("Cannot enhance @Configuration bean definition '" +
 							beanName + "' since it is not stored in an AbstractBeanDefinition subclass");
@@ -428,7 +428,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 							"is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor " +
 							"return type: Consider declaring such methods as 'static'.");
 				}
-				configBeanDefs.put(beanName, (AbstractBeanDefinition) beanDef);
+				configBeanDefs.put(beanName, (AbstractBeanDefinition) beanDef);  // 如果是@Configuration 也就是full 这里会put
 			}
 		}
 		if (configBeanDefs.isEmpty() || NativeDetector.inNativeImage()) {
@@ -436,8 +436,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			enhanceConfigClasses.end();
 			return;
 		}
-
-		ConfigurationClassEnhancer enhancer = new ConfigurationClassEnhancer();
+		// configBeanDefs也就是@Configuration，需要cglib代理的容器
+		ConfigurationClassEnhancer enhancer = new ConfigurationClassEnhancer(); //  todo @Configuration cglib增强
 		for (Map.Entry<String, AbstractBeanDefinition> entry : configBeanDefs.entrySet()) {
 			AbstractBeanDefinition beanDef = entry.getValue();
 			// If a @Configuration class gets proxied, always proxy the target class
@@ -450,7 +450,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					logger.trace(String.format("Replacing bean definition '%s' existing class '%s' with " +
 							"enhanced class '%s'", entry.getKey(), configClass.getName(), enhancedClass.getName()));
 				}
-				beanDef.setBeanClass(enhancedClass);
+				beanDef.setBeanClass(enhancedClass); // todo 设置cglib增强后的class
 			}
 		}
 		enhanceConfigClasses.tag("classCount", () -> String.valueOf(configBeanDefs.keySet().size())).end();
