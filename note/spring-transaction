@@ -1,0 +1,7 @@
+
+
+@EnableTransactionManagement
+
+
+@Import(TransactionManagementConfigurationSelector.class)
+public @interface EnableTransactionManagement { }

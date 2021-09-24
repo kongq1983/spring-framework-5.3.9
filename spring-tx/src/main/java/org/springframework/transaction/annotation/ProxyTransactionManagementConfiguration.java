@@ -60,7 +60,7 @@ public class ProxyTransactionManagementConfiguration extends AbstractTransaction
 	}
 
 	@Bean
-	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE) // todo 实例化TransactionInterceptor
 	public TransactionInterceptor transactionInterceptor(TransactionAttributeSource transactionAttributeSource) {
 		TransactionInterceptor interceptor = new TransactionInterceptor();
 		interceptor.setTransactionAttributeSource(transactionAttributeSource);

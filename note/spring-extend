@@ -1,0 +1,12 @@
+
+@EnableTransactionManagement
+
+@Import(TransactionManagementConfigurationSelector.class)
+public @interface EnableTransactionManagement { }
+
+===========================================================================
+
+@Import(AspectJAutoProxyRegistrar.class)
+public @interface EnableAspectJAutoProxy { }
+
+===========================================================================
