@@ -86,7 +86,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * from the given component classes and automatically refreshing the context.
 	 * @param componentClasses one or more component classes &mdash; for example,
 	 * {@link Configuration @Configuration} classes
-	 */
+	 */ // 父类GenericApplicationContext会创建DefaultListableBeanFactory
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		this();
 		register(componentClasses); // scan  只是注册Bean定义(传入的配置类)

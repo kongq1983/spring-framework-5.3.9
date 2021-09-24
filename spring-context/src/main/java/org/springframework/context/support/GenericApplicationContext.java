@@ -104,7 +104,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	private final AtomicBoolean refreshed = new AtomicBoolean();
 
 
-	/**
+	/** todo 创建DefaultListableBeanFactory
 	 * Create a new GenericApplicationContext.
 	 * @see #registerBeanDefinition
 	 * @see #refresh

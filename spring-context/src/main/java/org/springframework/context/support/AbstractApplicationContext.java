@@ -550,7 +550,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh(); // 准备刷新  Prepare this context for refreshing. 初始化initPropertySources earlyApplicationListeners earlyApplicationEvents
 
 			// Tell the subclass to refresh the internal bean factory.
-			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory(); // 分刷新和不刷新的子类
 			// 上面一句  注册也只是将这些信息都保存到了注册中心(说到底核心是一个 beanName-> beanDefinition 的 map)
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory); //设置 BeanFactory的类加载器，添加几个BeanPostProcessor，手动注册几个特殊的bean
@@ -666,9 +666,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @return the fresh BeanFactory instance
 	 * @see #refreshBeanFactory()
 	 * @see #getBeanFactory()
-	 */
+	 */ // AbstractRefreshableApplicationContext: 先注销Bean，然后注册
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
-		refreshBeanFactory();
+		refreshBeanFactory(); // GenericApplicationContext: 设置id
 		return getBeanFactory();
 	}
 
@@ -1457,7 +1457,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected abstract void closeBeanFactory();
 
-	/**
+	/** :
 	 * Subclasses must return their internal bean factory here. They should implement the
 	 * lookup efficiently, so that it can be called repeatedly without a performance penalty.
 	 * <p>Note: Subclasses should check whether the context is still active before
@@ -1470,9 +1470,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #refreshBeanFactory()
 	 * @see #closeBeanFactory()
 	 */
-	@Override
+	@Override // 子类1: GenericApplicationContext: 获取DefaultListableBeanFactory
 	public abstract ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException;
-
+	// 子类2: AbstractRefreshableApplicationContext
 
 	/**
 	 * Return information about this context.
