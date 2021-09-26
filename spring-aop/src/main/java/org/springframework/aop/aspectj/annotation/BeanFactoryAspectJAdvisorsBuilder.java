@@ -73,7 +73,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	}
 
 
-	/** 本方法会被多次调用，因为一个Bean在判断要不要进行AOP时，都会调用这个方法
+	/** 本方法会被多次调用，因为一个Bean在判断要不要进行AOP时，都会调用这个方法  (解析@Aspect切面，得到该切面的所有Advisor，并缓存)
 	 * Look for AspectJ-annotated aspect beans in the current bean factory,
 	 * and return to a list of Spring AOP Advisors representing them.
 	 * <p>Creates a Spring Advisor for each AspectJ advice method.
@@ -109,7 +109,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) { // 如果bean本身是单例的，则缓存创建的Advisors，Advisor是单例的 || 如果bean本身不是单例的，则缓存创建的Advisor的factory，Advisor也不是单例的
-									this.advisorsCache.put(beanName, classAdvisors);// 缓存切面所对应的所有Advisor对象
+									this.advisorsCache.put(beanName, classAdvisors);// key:@Aspect的beanName  value: 该切面解析出来的所有Advisors    缓存切面所对应的所有Advisor对象
 								}
 								else {
 									this.aspectFactoryCache.put(beanName, factory);
@@ -140,7 +140,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 		} // 如果切面已经找到过了，那么则遍历每个切面是否缓存了对应的Advisor，如果没有缓存则进行解析得到Advisor
 		List<Advisor> advisors = new ArrayList<>();
 		for (String aspectName : aspectNames) {
-			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName);
+			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName); // 根据@Aspect的beanName获取
 			if (cachedAdvisors != null) {
 				advisors.addAll(cachedAdvisors);
 			}

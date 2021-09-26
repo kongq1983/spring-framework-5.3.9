@@ -446,7 +446,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 		}
 		return getShadowMatch(targetMethod, method);
 	}
-
+	// todo aop 匹配 match import-import-import pointcut-match
 	private ShadowMatch getShadowMatch(Method targetMethod, Method originalMethod) {
 		// Avoid lock contention for known Methods through concurrent access...
 		ShadowMatch shadowMatch = this.shadowMatchCache.get(targetMethod);
@@ -458,8 +458,8 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 				if (shadowMatch == null) {
 					Method methodToMatch = targetMethod;
 					try {
-						try {
-							shadowMatch = obtainPointcutExpression().matchesMethodExecution(methodToMatch);
+						try { // todo PointcutExpressionImpl.matchesMethodExecution
+							shadowMatch = obtainPointcutExpression().matchesMethodExecution(methodToMatch); // 重要
 						}
 						catch (ReflectionWorldException ex) {
 							// Failed to introspect target method, probably because it has been loaded

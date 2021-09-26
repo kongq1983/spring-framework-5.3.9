@@ -123,14 +123,14 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 		}
 	}
 
-	/**
+	/** 是否存在其中的一个注解 Pointcut.class, Around.class, Before.class, After.class, AfterReturning.class, AfterThrowing.class
 	 * Find and return the first AspectJ annotation on the given method
 	 * (there <i>should</i> only be one anyway...).
 	 */
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static AspectJAnnotation<?> findAspectJAnnotationOnMethod(Method method) {
-		for (Class<?> clazz : ASPECTJ_ANNOTATION_CLASSES) {
+		for (Class<?> clazz : ASPECTJ_ANNOTATION_CLASSES) { // Pointcut.class, Around.class, Before.class, After.class, AfterReturning.class, AfterThrowing.class
 			AspectJAnnotation<?> foundAnnotation = findAnnotation(method, (Class<Annotation>) clazz);
 			if (foundAnnotation != null) {
 				return foundAnnotation;

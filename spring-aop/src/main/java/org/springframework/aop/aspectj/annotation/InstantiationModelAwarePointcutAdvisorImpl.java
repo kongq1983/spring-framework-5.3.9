@@ -33,7 +33,7 @@ import org.springframework.aop.support.DynamicMethodMatcherPointcut;
 import org.springframework.aop.support.Pointcuts;
 import org.springframework.lang.Nullable;
 
-/**
+/** 所有的增强都由 Advisor 的实现类InstantiationModelAwarePointcutAdvisorImpl 统一封装的
  * Internal implementation of AspectJPointcutAdvisor.
  * Note that there will be one instance of this advisor for each target method.
  *

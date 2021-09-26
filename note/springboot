@@ -1,0 +1,52 @@
+
+
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+public @interface SpringBootApplication { }
+
+===================================================================================================================
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Configuration
+public @interface SpringBootConfiguration {
+
+	@AliasFor(annotation = Configuration.class)
+	boolean proxyBeanMethods() default true;  // 如果false，是不是bean不代理了
+
+}
+
+===================================================================================================================
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@AutoConfigurationPackage
+@Import(AutoConfigurationImportSelector.class)
+public @interface EnableAutoConfiguration {
+
+	String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
+
+	Class<?>[] exclude() default {};
+
+	String[] excludeName() default {};
+
+}
+
+===================================================================================================================
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Import(AutoConfigurationPackages.Registrar.class)
+public @interface AutoConfigurationPackage {
+
+}
+
+===================================================================================================================
+===================================================================================================================

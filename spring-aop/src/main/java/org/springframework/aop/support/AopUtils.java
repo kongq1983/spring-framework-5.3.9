@@ -220,7 +220,7 @@ public abstract class AopUtils {
 	 * @param hasIntroductions whether or not the advisor chain
 	 * for this bean includes any introductions
 	 * @return whether the pointcut can apply on any method
-	 */
+	 */ // 看了实现方式，判断方式就是通过PointCut进行判断的
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
 		if (!pc.getClassFilter().matches(targetClass)) {
@@ -246,8 +246,8 @@ public abstract class AopUtils {
 
 		for (Class<?> clazz : classes) {
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
-			for (Method method : methods) {
-				if (introductionAwareMethodMatcher != null ?
+			for (Method method : methods) { // 下面判断的
+				if (introductionAwareMethodMatcher != null ? // AspectJExpressionPointcut
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
 						methodMatcher.matches(method, targetClass)) {
 					return true;
@@ -283,7 +283,7 @@ public abstract class AopUtils {
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
-		}
+		} // PointCut类型的Advisor的判断方法
 		else if (advisor instanceof PointcutAdvisor) { // @Aspect 下面的Before After Around 等 一般走这里的
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
@@ -307,18 +307,18 @@ public abstract class AopUtils {
 			return candidateAdvisors;
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>(); // 匹配的Advisor
-		for (Advisor candidate : candidateAdvisors) {
-			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
+		for (Advisor candidate : candidateAdvisors) { //这个循环主要是处理IntroductionAdvisor类型的Advisor，看适合不适合
+			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) { // candidate instanceof IntroductionAdvisor 这个条件都不满足
 				eligibleAdvisors.add(candidate);
 			}
 		}
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
-		for (Advisor candidate : candidateAdvisors) {
+		for (Advisor candidate : candidateAdvisors) { // 这个循环处理非IntroductionAdvisor类型的Advisor
 			if (candidate instanceof IntroductionAdvisor) {
 				// already processed
 				continue;
 			}
-			if (canApply(candidate, clazz, hasIntroductions)) { // 能应用的
+			if (canApply(candidate, clazz, hasIntroductions)) { //在这里判断是否适合  一般直接到这里来匹配  能应用的
 				eligibleAdvisors.add(candidate);
 			}
 		}
