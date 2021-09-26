@@ -1,0 +1,124 @@
+
+
+@Import(AspectJAutoProxyRegistrar.class)
+public @interface EnableAspectJAutoProxy { }
+
+beanName: org.springframework.aop.config.internalAutoProxyCreator
+
+
+==================================================================================================
+public final class ExposeInvocationInterceptor implements MethodInterceptor, PriorityOrdered
+
+public class AspectJAroundAdvice extends AbstractAspectJAdvice implements MethodInterceptor
+
+==================================================================================================
+
+ConfigurationClassEnhancer
+
+
+ConfigurationClassPostProcessor:processConfigBeanDefinitions:276
+
+==================================================================================================
+*******************************************************************************
+aop被代理对象
+AnnotationAwareAspectJAutoProxyCreator (aop在这里处理wrapIfNecessary)
+
+postProcessAfterInitialization(初始化后)
+
+AbstractAutoProxyCreator: 341 (这里创建代理)
+
+
+
+
+==================================================================================================
+
+AbstractAdvisorAutoProxyCreator: findEligibleAdvisors : 95  (import)
+
+PointcutAdvisor
+
+DefaultPointcutAdvisor
+
+==================================================================================================
+
+ReflectiveAspectJAdvisorFactory
+
+PointcutExpressionImpl
+
+
+AspectJExpressionPointcut
+// 缓存的是该方法是否匹配
+AspectJExpressionPointcut : private transient Map<Method, ShadowMatch> shadowMatchCache = new ConcurrentHashMap<>(32);
+
+==================================================================================================
+
+switch (aspectJAnnotation.getAnnotationType()) {
+			case AtPointcut:
+				if (logger.isDebugEnabled()) {
+					logger.debug("Processing pointcut '" + candidateAdviceMethod.getName() + "'");
+				}
+				return null;
+			case AtAround:
+				springAdvice = new AspectJAroundAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); // MethodInterceptor
+				break;
+			case AtBefore:
+				springAdvice = new AspectJMethodBeforeAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); // MethodInterceptor
+				break;
+			case AtAfter:
+				springAdvice = new AspectJAfterAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); //MethodInterceptor
+				break;
+			case AtAfterReturning:
+				springAdvice = new AspectJAfterReturningAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory);
+				AfterReturning afterReturningAnnotation = (AfterReturning) aspectJAnnotation.getAnnotation();
+				if (StringUtils.hasText(afterReturningAnnotation.returning())) {
+					springAdvice.setReturningName(afterReturningAnnotation.returning());
+				}
+				break;
+			case AtAfterThrowing:
+				springAdvice = new AspectJAfterThrowingAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); //MethodInterceptor
+				AfterThrowing afterThrowingAnnotation = (AfterThrowing) aspectJAnnotation.getAnnotation();
+				if (StringUtils.hasText(afterThrowingAnnotation.throwing())) {
+					springAdvice.setThrowingName(afterThrowingAnnotation.throwing());
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException(
+						"Unsupported advice type on method: " + candidateAdviceMethod);
+		}
+
+==================================================================================================
+
+Spring中有五种增强：BeforeAdvide（前置增强）、AfterAdvice（后置增强）、ThrowsAdvice（异常增强）、RoundAdvice（环绕增强）、IntroductionAdvice（引入增强）
+引入增强（Introduction Advice）的概念：一个Java类，没有实现A接口，在不修改Java类的情况下，使其具备A接口的功能。
+（非常强大有木有，A不需要动代码，就能有别的功能，吊炸天有木有）
+IntroductionAdvisor纯粹就是为Introduction而生的。
+
+IntroductionAdvisor 和 PointcutAdvisor接口不同，它仅有一个类过滤器ClassFilter 而没有 MethodMatcher，
+这是因为 `引介切面 的切点是类级别的，
+而 Pointcut 的切点是方法级别的（细粒度更细，所以更加常用）。
+
+为了更好的了解IntroductionAdvisor，我先有必要讲解下IntroductionInfo和IntroductionInterceptor
+https://blog.csdn.net/f641385712/article/details/89303088
+
+Advisor是Spring AOP中非常重要的一个概念，最终代理对象进行执行什么的，都是适配到此处，因此需要重点掌握。
+其中，引介增强平时使用得较少，但是在特殊的场景下，它能够解决某一类问题，还是非常不错的
+
+===============================================================================================================================================
+在AOP中有几个概念：
+— 方面（Aspect）：一个关注点的模块化，这个关注点实现可能另外横切多个对象。事务管理是J2EE应用中一个很好的横切关注点例子。方面用Spring的Advisor或拦截器实现。
+
+— 连接点（Joinpoint）：程序执行过程中明确的点，如方法的调用或特定的异常被抛出。
+
+— 通知（Advice）：在特定的连接点，AOP框架执行的动作。各种类型的通知包括“around”、“before”和“throws”通知。
+
+— 切入点（Pointcut）：指定一个通知将被引发的一系列连接点的集合。AOP框架必须允许开发者指定切入点，例如，使用正则表达式。
+
+总的来说：
+    1、Adivisor是一种特殊的Aspect，Advisor代表spring中的Aspect
+    2、advisor只持有一个Pointcut和一个advice，而aspect可以多个pointcut和多个advice
+
+===============================================================================================================================================
