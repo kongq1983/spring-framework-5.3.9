@@ -469,7 +469,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		if (cached == null) { // 如果没缓存，先缓存
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
-			this.methodCache.put(cacheKey, cached);
+			this.methodCache.put(cacheKey, cached); // key: method  value: interceptor列表
 		}
 		return cached;
 	}

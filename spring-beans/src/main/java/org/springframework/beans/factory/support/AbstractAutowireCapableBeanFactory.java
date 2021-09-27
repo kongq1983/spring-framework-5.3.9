@@ -571,7 +571,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
-			if (!mbd.postProcessed) {
+			if (!mbd.postProcessed) { // 缓存标记，只处理1次
 				try {// todo 循环处理MergedBeanDefinitionPostProcessor
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				} // CommonAnnotationBeanPostProcessor AutowiredAnnotationBeanPostProcessor ApplicationListenerDetector
@@ -615,7 +615,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			Object earlySingletonReference = getSingleton(beanName, false); // 如果没循环依赖 这里也是返回null
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
-					exposedObject = earlySingletonReference;
+					exposedObject = earlySingletonReference; // 注意这里 三级缓存过来的时候，会不会被getEarlyReference代理了
 				}
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
 					String[] dependentBeans = getDependentBeans(beanName);
@@ -1099,7 +1099,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 	}
 
-	/**
+	/** todo 实例化前
 	 * Apply before-instantiation post-processors, resolving whether there is a
 	 * before-instantiation shortcut for the specified bean.
 	 * @param beanName the name of the bean

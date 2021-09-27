@@ -123,10 +123,10 @@ abstract class ConfigurationClassUtils {
 		}
 
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
-		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) { // 存在@Configuration
-			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL); // 设置full
+		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) { // todo  存在@Configuration 只有proxyBeanMethods=true才会进入条件
+			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL); // 设置full  只有full，才会代理该类
 		} // 非接口 Component ComponentScan Import ImportResource @Bean
-		else if (config != null || isConfigurationCandidate(metadata)) {
+		else if (config != null || isConfigurationCandidate(metadata)) {  // config!=null 说明这里是有Configuration注解，不过proxyBeanMethods=false
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE); // 设置lite
 		}
 		else {

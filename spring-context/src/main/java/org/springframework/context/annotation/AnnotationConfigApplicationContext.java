@@ -76,8 +76,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * @param beanFactory the DefaultListableBeanFactory instance to use for this context
 	 */
 	public AnnotationConfigApplicationContext(DefaultListableBeanFactory beanFactory) {
-		super(beanFactory);
-		this.reader = new AnnotatedBeanDefinitionReader(this);
+		super(beanFactory); // AnnotatedBeanDefinitionReader :  ConfigurationClassPostProcessor、AutowiredAnnotationBeanPostProcessor、CommonAnnotationBeanPostProcessor
+		this.reader = new AnnotatedBeanDefinitionReader(this);  // AnnotationConfigUtils.registerAnnotationConfigProcessors
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 

@@ -55,7 +55,7 @@ final class PostProcessorRegistrationDelegate {
 	private PostProcessorRegistrationDelegate() {
 	}
 
-
+	// todo 函數入口beanFactoryPostProcessors 是手工注册列表  没注册就是size==0 通过context.addBeanFactoryPostProcessor注册进来
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
@@ -80,18 +80,18 @@ final class PostProcessorRegistrationDelegate {
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>(); // 正常的BeanFactoryPostProcessor，非BeanDefinitionRegistryPostProcessor类型的BeanFactoryPostProcessor
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>(); // 注册的BeanFactoryPostProcessor，BeanDefinitionRegistryPostProcessor类型的BeanFactoryPostProcessor
 			// 这里的beanFactoryPostProcessors 是前面1. AnnotationConfigUtils.registerAnnotationConfigProcessors 2. AbstractApplicationContext.prepareBeanFactory
-			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
+			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) { // 手动注册列表
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) { // 这里的beanFactoryPostProcessors是Spring内置的
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
-					registryProcessor.postProcessBeanDefinitionRegistry(registry);
+					registryProcessor.postProcessBeanDefinitionRegistry(registry); // 先执行postProcessBeanDefinitionRegistry
 					registryProcessors.add(registryProcessor);
 				}
 				else {
 					regularPostProcessors.add(postProcessor);
 				}
 			}
-
+			// 直接context.addBeanFactoryPostProcessor 是没有BeanDefinition的
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
@@ -144,8 +144,8 @@ final class PostProcessorRegistrationDelegate {
 			}
 			// 上面都是处理BeanDefinitionRegistryPostProcessor，下面开始处理BeanFactoryPostProcessor
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
-			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory); // 调用BeanFactoryPostProcessor的postProcessBeanFactory
-			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory); // 调用BeanFactoryPostProcessor的postProcessBeanFactory
+			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory); // 调用BeanFactoryPostProcessor的postProcessBeanFactory(BeanDefinitionRegistryPostProcessor)
+			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory); // 调用手动注册BeanFactoryPostProcessor的的postProcessBeanFactory
 		}
 
 		else {
@@ -160,11 +160,11 @@ final class PostProcessorRegistrationDelegate {
 
 		// Separate between BeanFactoryPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
-		List<BeanFactoryPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
-		List<String> orderedPostProcessorNames = new ArrayList<>();
-		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
+		List<BeanFactoryPostProcessor> priorityOrderedPostProcessors = new ArrayList<>(); // PriorityOrdered容器
+		List<String> orderedPostProcessorNames = new ArrayList<>(); // Ordered 容器
+		List<String> nonOrderedPostProcessorNames = new ArrayList<>();  // 没有排序的容器
 		for (String ppName : postProcessorNames) {
-			if (processedBeans.contains(ppName)) {
+			if (processedBeans.contains(ppName)) {  // 上面已处理过了，则忽略
 				// skip - already processed in first phase above
 			}
 			else if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
@@ -269,7 +269,7 @@ final class PostProcessorRegistrationDelegate {
 		for (String ppName : nonOrderedPostProcessorNames) {
 			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 			nonOrderedPostProcessors.add(pp);
-			if (pp instanceof MergedBeanDefinitionPostProcessor) {
+			if (pp instanceof MergedBeanDefinitionPostProcessor) {  // todo MergedBeanDefinitionPostProcessor
 				internalPostProcessors.add(pp);
 			}
 		}
