@@ -959,8 +959,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						return null;
 					}, getAccessControlContext());
 				}
-				else {
-					smartSingleton.afterSingletonsInstantiated();
+				else { // EventListenerMethodProcessor
+					smartSingleton.afterSingletonsInstantiated(); // todo EventListenerMethodProcessor.afterSingletonsInstantiated
 				}
 				smartInitialize.end();
 			}

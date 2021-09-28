@@ -46,7 +46,7 @@ public class PayloadApplicationEvent<T> extends ApplicationEvent implements Reso
 	public PayloadApplicationEvent(Object source, T payload) {
 		super(source);
 		Assert.notNull(payload, "Payload must not be null");
-		this.payload = payload;
+		this.payload = payload; // 数据
 	}
 
 

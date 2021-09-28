@@ -73,4 +73,6 @@ include 'spring-di-debug'
 project(':spring-di-debug').projectDir = file('debug/spring-di-debug')
 include 'debug:spring-aop-debug'
 findProject(':debug:spring-aop-debug')?.name = 'spring-aop-debug'
+include 'debug:spring-eventlister-debug'
+findProject(':debug:spring-eventlister-debug')?.name = 'spring-eventlister-debug'
 

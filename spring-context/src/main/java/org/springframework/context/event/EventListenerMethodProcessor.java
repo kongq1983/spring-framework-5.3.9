@@ -123,9 +123,9 @@ public class EventListenerMethodProcessor
 		Assert.state(this.beanFactory != null, "No ConfigurableListableBeanFactory set");
 		String[] beanNames = beanFactory.getBeanNamesForType(Object.class); // 根据Object  就相当于获取当前Bean容器下是所有beanName
 		for (String beanName : beanNames) {
-			if (!ScopedProxyUtils.isScopedTarget(beanName)) {
+			if (!ScopedProxyUtils.isScopedTarget(beanName)) { // 如果beanName以scopedTarget.开头的，不会进来
 				Class<?> type = null;
-				try {
+				try { // 获取beanName的class类型
 					type = AutoProxyUtils.determineTargetClass(beanFactory, beanName);
 				}
 				catch (Throwable ex) {
@@ -135,7 +135,7 @@ public class EventListenerMethodProcessor
 					}
 				}
 				if (type != null) {
-					if (ScopedObject.class.isAssignableFrom(type)) {
+					if (ScopedObject.class.isAssignableFrom(type)) { // 是否ScopedObject接口
 						try {
 							Class<?> targetClass = AutoProxyUtils.determineTargetClass(
 									beanFactory, ScopedProxyUtils.getTargetBeanName(beanName));
@@ -192,16 +192,16 @@ public class EventListenerMethodProcessor
 				Assert.state(context != null, "No ApplicationContext set");
 				List<EventListenerFactory> factories = this.eventListenerFactories;
 				Assert.state(factories != null, "EventListenerFactory List not initialized");
-				for (Method method : annotatedMethods.keySet()) {
+				for (Method method : annotatedMethods.keySet()) { // 有@EventListener注解方法
 					for (EventListenerFactory factory : factories) {
-						if (factory.supportsMethod(method)) {
+						if (factory.supportsMethod(method)) { // 默认就DefaultEventListenerFactory 目前肯定返回true
 							Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
 							ApplicationListener<?> applicationListener =
-									factory.createApplicationListener(beanName, targetType, methodToUse);
-							if (applicationListener instanceof ApplicationListenerMethodAdapter) {
+									factory.createApplicationListener(beanName, targetType, methodToUse); // 包装成ApplicationListenerMethodAdapter
+							if (applicationListener instanceof ApplicationListenerMethodAdapter) { // 会进入这里
 								((ApplicationListenerMethodAdapter) applicationListener).init(context, this.evaluator);
 							}
-							context.addApplicationListener(applicationListener);
+							context.addApplicationListener(applicationListener); // 添加eventListener
 							break;
 						}
 					}
