@@ -19,6 +19,18 @@ ConfigurationClassEnhancer
 ConfigurationClassPostProcessor:processConfigBeanDefinitions:276
 
 ==================================================================================================
+*******************************************************************************
+aop被代理对象
+AnnotationAwareAspectJAutoProxyCreator (aop在这里处理wrapIfNecessary)
+
+postProcessAfterInitialization(初始化后)
+
+AbstractAutoProxyCreator: 341 (这里创建代理)
+
+
+
+
+==================================================================================================
 
 AbstractAdvisorAutoProxyCreator: findEligibleAdvisors : 95  (import)
 
@@ -26,6 +38,59 @@ PointcutAdvisor
 
 DefaultPointcutAdvisor
 
+==================================================================================================
+
+ReflectiveAspectJAdvisorFactory
+
+PointcutExpressionImpl
+
+
+AspectJExpressionPointcut
+// 缓存的是该方法是否匹配
+AspectJExpressionPointcut : private transient Map<Method, ShadowMatch> shadowMatchCache = new ConcurrentHashMap<>(32);
+
+==================================================================================================
+
+switch (aspectJAnnotation.getAnnotationType()) {
+			case AtPointcut:
+				if (logger.isDebugEnabled()) {
+					logger.debug("Processing pointcut '" + candidateAdviceMethod.getName() + "'");
+				}
+				return null;
+			case AtAround:
+				springAdvice = new AspectJAroundAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); // MethodInterceptor
+				break;
+			case AtBefore:
+				springAdvice = new AspectJMethodBeforeAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); // MethodInterceptor
+				break;
+			case AtAfter:
+				springAdvice = new AspectJAfterAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); //MethodInterceptor
+				break;
+			case AtAfterReturning:
+				springAdvice = new AspectJAfterReturningAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory);
+				AfterReturning afterReturningAnnotation = (AfterReturning) aspectJAnnotation.getAnnotation();
+				if (StringUtils.hasText(afterReturningAnnotation.returning())) {
+					springAdvice.setReturningName(afterReturningAnnotation.returning());
+				}
+				break;
+			case AtAfterThrowing:
+				springAdvice = new AspectJAfterThrowingAdvice(
+						candidateAdviceMethod, expressionPointcut, aspectInstanceFactory); //MethodInterceptor
+				AfterThrowing afterThrowingAnnotation = (AfterThrowing) aspectJAnnotation.getAnnotation();
+				if (StringUtils.hasText(afterThrowingAnnotation.throwing())) {
+					springAdvice.setThrowingName(afterThrowingAnnotation.throwing());
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException(
+						"Unsupported advice type on method: " + candidateAdviceMethod);
+		}
+
+==================================================================================================
 
 Spring中有五种增强：BeforeAdvide（前置增强）、AfterAdvice（后置增强）、ThrowsAdvice（异常增强）、RoundAdvice（环绕增强）、IntroductionAdvice（引入增强）
 引入增强（Introduction Advice）的概念：一个Java类，没有实现A接口，在不修改Java类的情况下，使其具备A接口的功能。

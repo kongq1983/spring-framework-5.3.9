@@ -69,7 +69,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 					if (mm instanceof IntroductionAwareMethodMatcher) {
 						if (hasIntroductions == null) {
 							hasIntroductions = hasMatchingIntroductions(advisors, actualClass);
-						}
+						} // todo  @Aspect方式 ： AspectJExpressionPointcut.match  根据ShadowMatch来匹配
 						match = ((IntroductionAwareMethodMatcher) mm).matches(method, actualClass, hasIntroductions);
 					}
 					else {

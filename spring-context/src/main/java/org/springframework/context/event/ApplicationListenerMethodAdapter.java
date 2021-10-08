@@ -341,7 +341,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 
 		ReflectionUtils.makeAccessible(this.method);
 		try {
-			return this.method.invoke(bean, args);
+			return this.method.invoke(bean, args); // todo 注解方式 通知消息
 		}
 		catch (IllegalArgumentException ex) {
 			assertTargetBean(this.method, bean, args);

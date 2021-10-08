@@ -959,8 +959,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						return null;
 					}, getAccessControlContext());
 				}
-				else {
-					smartSingleton.afterSingletonsInstantiated();
+				else { // EventListenerMethodProcessor
+					smartSingleton.afterSingletonsInstantiated(); // todo EventListenerMethodProcessor.afterSingletonsInstantiated
 				}
 				smartInitialize.end();
 			}
@@ -1293,9 +1293,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		else if (javaxInjectProviderClass == descriptor.getDependencyType()) {
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
-		else { // 在属性或set方法上使用了@Lazy注解，那么则构造一个代理对象并返回，真正使用该代理对象时才进行类型筛选Bean
+		else { // todo 在属性或set方法上或者字段上 使用了@Lazy注解，那么则构造一个代理对象并返回，真正使用该代理对象时才进行类型筛选Bean
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
-					descriptor, requestingBeanName);
+					descriptor, requestingBeanName); // 如果注入加了@Lazy，则会生成代理
 			if (result == null) { // descriptor表示某个属性或某个set方法  requestingBeanName表示正在进行依赖注入的Bean
 				result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
 			}

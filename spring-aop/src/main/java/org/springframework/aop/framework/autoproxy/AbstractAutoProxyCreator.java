@@ -242,7 +242,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
 
-	@Override // todo spring-aop  postProcessBeforeInstantiation
+	@Override // todo spring-aop  postProcessBeforeInstantiation 实例化前
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
 
@@ -329,16 +329,16 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {  //如果@Asject的bean，则直接在这里返回bean
 			return bean;  // 因为@Aspect的bean在postProcessBeforeInstantiation已经放入了cacheKey
-		}
-		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
+		} // postProcessBeforeInstantiation里面已经处理了@Aspect的
+		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) { //
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
-		// Create proxy if we have advice. todo 这里代理
+		// Create proxy if we have advice. todo 这里代理   下面重要-重要
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
-			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			this.advisedBeans.put(cacheKey, Boolean.TRUE); // 设置需要代理标记
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean)); // todo 这里代理 import-import-import
 			this.proxyTypes.put(cacheKey, proxy.getClass());

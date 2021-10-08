@@ -16,9 +16,11 @@ dependencies {
     compile(project(":spring-aop"))
     compile(project(":spring-web"))
 
-    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
+//    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
+    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7'
 //     https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
-    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
+//    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.7'
     compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'

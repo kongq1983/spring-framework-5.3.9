@@ -27,7 +27,7 @@ import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.lang.Nullable;
 
-/**
+/** ExposeInvocationInterceptor就是用来传递MethodInvocation的。在后续的任何下调用链环节，只要需要用到当前的MethodInvocation就通过ExposeInvocationInterceptor.currentInvocation()静态方法获得
  * Interceptor that exposes the current {@link org.aopalliance.intercept.MethodInvocation}
  * as a thread-local object. We occasionally need to do this; for example, when a pointcut
  * (e.g. an AspectJ expression pointcut) needs to know the full invocation context.
@@ -37,7 +37,7 @@ import org.springframework.lang.Nullable;
  * Target objects should be plain POJOs as far as possible.
  *
  * <p>If used, this interceptor will normally be the first in the interceptor chain.
- *
+ * 如果使用，这个拦截器通常是拦截器链中的第一个。
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
@@ -91,13 +91,13 @@ public final class ExposeInvocationInterceptor implements MethodInterceptor, Pri
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
-		MethodInvocation oldInvocation = invocation.get();
-		invocation.set(mi);
+		MethodInvocation oldInvocation = invocation.get();  // 第一个一般是null
+		invocation.set(mi); // 设置当前的MethodInvocation
 		try {
-			return mi.proceed();
+			return mi.proceed(); //执行
 		}
 		finally {
-			invocation.set(oldInvocation);
+			invocation.set(oldInvocation); // 恢复旧的  一般是null
 		}
 	}
 

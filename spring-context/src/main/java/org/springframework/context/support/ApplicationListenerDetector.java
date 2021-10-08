@@ -74,7 +74,7 @@ class ApplicationListenerDetector implements DestructionAwareBeanPostProcessor, 
 		if (bean instanceof ApplicationListener) { // 是否ApplicationListener类型
 			// potentially not detected as a listener by getBeanNamesForType retrieval
 			Boolean flag = this.singletonNames.get(beanName); // 是否单例标志
-			if (Boolean.TRUE.equals(flag)) {
+			if (Boolean.TRUE.equals(flag)) { // 单例
 				// singleton bean (top-level or inner): register on the fly
 				this.applicationContext.addApplicationListener((ApplicationListener<?>) bean); // 单例就注册事件监听器
 			}

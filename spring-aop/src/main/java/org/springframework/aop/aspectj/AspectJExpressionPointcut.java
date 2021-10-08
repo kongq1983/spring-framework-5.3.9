@@ -427,7 +427,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 
 	private ShadowMatch getTargetShadowMatch(Method method, Class<?> targetClass) {
 		Method targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
-		if (targetMethod.getDeclaringClass().isInterface()) {
+		if (targetMethod.getDeclaringClass().isInterface()) { // 目标方法是否接口
 			// Try to build the most specific interface possible for inherited methods to be
 			// considered for sub-interface matches as well, in particular for proxy classes.
 			// Note: AspectJ is only going to take Method.getDeclaringClass() into account.
@@ -446,10 +446,10 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 		}
 		return getShadowMatch(targetMethod, method);
 	}
-
+	// todo aop 匹配 match import-import-import pointcut-match
 	private ShadowMatch getShadowMatch(Method targetMethod, Method originalMethod) {
 		// Avoid lock contention for known Methods through concurrent access...
-		ShadowMatch shadowMatch = this.shadowMatchCache.get(targetMethod);
+		ShadowMatch shadowMatch = this.shadowMatchCache.get(targetMethod); // cache
 		if (shadowMatch == null) {
 			synchronized (this.shadowMatchCache) {
 				// Not found - now check again with full lock...
@@ -458,8 +458,8 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 				if (shadowMatch == null) {
 					Method methodToMatch = targetMethod;
 					try {
-						try {
-							shadowMatch = obtainPointcutExpression().matchesMethodExecution(methodToMatch);
+						try { // todo PointcutExpressionImpl.matchesMethodExecution
+							shadowMatch = obtainPointcutExpression().matchesMethodExecution(methodToMatch); // 重要
 						}
 						catch (ReflectionWorldException ex) {
 							// Failed to introspect target method, probably because it has been loaded
@@ -510,7 +510,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 						shadowMatch = new DefensiveShadowMatch(shadowMatch,
 								fallbackExpression.matchesMethodExecution(methodToMatch));
 					}
-					this.shadowMatchCache.put(targetMethod, shadowMatch);
+					this.shadowMatchCache.put(targetMethod, shadowMatch); // todo  缓存目标方法和shadowMatch
 				}
 			}
 		}
