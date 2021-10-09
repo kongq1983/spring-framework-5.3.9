@@ -317,17 +317,17 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			this.targetSource = freshTargetSource();
 			if (this.autodetectInterfaces && getProxiedInterfaces().length == 0 && !isProxyTargetClass()) {
 				// Rely on AOP infrastructure to tell us what interfaces to proxy.
-				Class<?> targetClass = getTargetClass();
+				Class<?> targetClass = getTargetClass(); // 被代理对象  原始类的class 比如AccountService
 				if (targetClass == null) {
 					throw new FactoryBeanNotInitializedException("Cannot determine target class for proxy");
-				}
+				} // 处理接口
 				setInterfaces(ClassUtils.getAllInterfacesForClass(targetClass, this.proxyClassLoader));
 			}
 			// Initialize the shared singleton instance.
 			super.setFrozen(this.freezeProxy);
 			this.singletonInstance = getProxy(createAopProxy());
 		}
-		return this.singletonInstance;
+		return this.singletonInstance; // 代理对象
 	}
 
 	/**
