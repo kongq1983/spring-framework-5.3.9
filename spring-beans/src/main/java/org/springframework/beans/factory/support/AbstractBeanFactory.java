@@ -327,7 +327,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						}
 					}
 				}
-
+				// todo check scope  deal scope
 				// Create bean instance.
 				if (mbd.isSingleton()) { // 单例  todo getSingleton 主线流程
 					sharedInstance = getSingleton(beanName, () -> {
