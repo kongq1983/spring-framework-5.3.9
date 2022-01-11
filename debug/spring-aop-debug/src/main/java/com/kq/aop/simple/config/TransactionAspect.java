@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- * 每个通知都会生成一个Advisor(advice、pointcut)
+ * 每个通知都会生成一个Advisor(advice-通知、pointcut-切点)
  * 就本文件来说findCandidateAdvisors()有3个  分别是around、before、after
  * @author kq
  * @date 2021-09-24 9:54
