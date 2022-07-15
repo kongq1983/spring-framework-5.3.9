@@ -375,11 +375,11 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					else if (rawCandidates.length == 1 && rawCandidates[0].getParameterCount() > 0) { // 没有添加了@Autowired注解的构造方法，并且类中只有一个构造方法，并且是有参的
 						candidateConstructors = new Constructor<?>[] {rawCandidates[0]};
 					}
-					else if (nonSyntheticConstructors == 2 && primaryConstructor != null && // primaryConstructor不用管
+					else if (nonSyntheticConstructors == 2 && primaryConstructor != null && // primaryConstructor不用管 Kotlin忽略
 							defaultConstructor != null && !primaryConstructor.equals(defaultConstructor)) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor, defaultConstructor};
 					}
-					else if (nonSyntheticConstructors == 1 && primaryConstructor != null) { // primaryConstructor不用管
+					else if (nonSyntheticConstructors == 1 && primaryConstructor != null) { // primaryConstructor不用管 Kotlin忽略
 						candidateConstructors = new Constructor<?>[] {primaryConstructor};
 					}
 					else { // 如果有多个有参、并且没有添加@Autowired的构造方法，是会返回空的
@@ -582,9 +582,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				if (this.beanFactory != null && this.beanFactory.containsBean(autowiredBeanName)) {
 					this.beanFactory.registerDependentBean(autowiredBeanName, beanName);
 				}
-				if (logger.isTraceEnabled()) {
-					logger.trace("Autowiring by type from bean name '" + beanName +
-							"' to bean named '" + autowiredBeanName + "'");
+				if (logger.isTraceEnabled()) {logger.trace("Autowiring by type from bean name '" + beanName +
+						"' to bean named '" + autowiredBeanName + "'");
+
 				}
 			}
 		}
