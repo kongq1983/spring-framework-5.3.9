@@ -147,7 +147,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	private final Set<String> lookupMethodsChecked = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
 	private final Map<Class<?>, Constructor<?>[]> candidateConstructorsCache = new ConcurrentHashMap<>(256);
-
+	// @Autowired注解解析缓存  存放这里
 	private final Map<String, InjectionMetadata> injectionMetadataCache = new ConcurrentHashMap<>(256);
 
 
@@ -260,7 +260,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 		// Let's check for lookup methods here...
 		if (!this.lookupMethodsChecked.contains(beanName)) {
-			if (AnnotationUtils.isCandidateClass(beanClass, Lookup.class)) {
+			if (AnnotationUtils.isCandidateClass(beanClass, Lookup.class)) { // 所以条件都不满足  最后返回true
 				try { // 默认会进来
 					Class<?> targetClass = beanClass;
 					do { // 遍历targetClass中的method，查看是否写了@Lookup方法

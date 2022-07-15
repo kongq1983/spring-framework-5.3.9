@@ -572,7 +572,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) { // 缓存标记，只处理1次
-				try {// todo 循环处理MergedBeanDefinitionPostProcessor
+				try {// todo 循环处理MergedBeanDefinitionPostProcessor postProcessMergedBeanDefinition 解析注解在这里解析
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				} // CommonAnnotationBeanPostProcessor AutowiredAnnotationBeanPostProcessor ApplicationListenerDetector
 				catch (Throwable ex) {
@@ -1116,7 +1116,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				if (targetType != null) {
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
-						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);  // 自己创建的bean 不会进入这里
 					}
 				}
 			}
@@ -1778,8 +1778,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
-		try { // 注解方式 先调用CommonAnnotationBeanPostProcessor的 @PostConstruct
-			invokeInitMethods(beanName, wrappedBean, mbd);
+		try { //  @PostConstruct在上面调用，这里是非注解的函数的调用(InitializingBean 、配置文件值当的init-method函数)
+			invokeInitMethods(beanName, wrappedBean, mbd); // 调用实现InitializingBean 或者配置文件指定的init-method的函数
 		}
 		catch (Throwable ex) {
 			throw new BeanCreationException(

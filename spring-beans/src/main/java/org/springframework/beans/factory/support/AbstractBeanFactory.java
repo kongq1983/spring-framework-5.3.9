@@ -358,7 +358,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					beanInstance = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
 				}
 
-				else {
+				else { // 其他scope
 					String scopeName = mbd.getScope();
 					if (!StringUtils.hasLength(scopeName)) {
 						throw new IllegalStateException("No scope name defined for bean ´" + beanName + "'");

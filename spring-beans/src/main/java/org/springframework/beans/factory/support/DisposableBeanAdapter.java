@@ -349,17 +349,17 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 		if (destroyMethodName == null) {
 			destroyMethodName = beanDefinition.getDestroyMethodName();
 			if (AbstractBeanDefinition.INFER_METHOD.equals(destroyMethodName) ||
-					(destroyMethodName == null && bean instanceof AutoCloseable)) {
+					(destroyMethodName == null && bean instanceof AutoCloseable)) { // AutoCloseable
 				// Only perform destroy method inference or Closeable detection
 				// in case of the bean not explicitly implementing DisposableBean
 				destroyMethodName = null;
-				if (!(bean instanceof DisposableBean)) {
+				if (!(bean instanceof DisposableBean)) {  // 没有实现DisposableBean接口，则会进入下面逻辑
 					try {
-						destroyMethodName = bean.getClass().getMethod(CLOSE_METHOD_NAME).getName();
+						destroyMethodName = bean.getClass().getMethod(CLOSE_METHOD_NAME).getName(); // 查找close方法
 					}
 					catch (NoSuchMethodException ex) {
 						try {
-							destroyMethodName = bean.getClass().getMethod(SHUTDOWN_METHOD_NAME).getName();
+							destroyMethodName = bean.getClass().getMethod(SHUTDOWN_METHOD_NAME).getName(); // 查找shutdown方法
 						}
 						catch (NoSuchMethodException ex2) {
 							// no candidate destroy method found
