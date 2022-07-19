@@ -317,7 +317,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		String path = location;
 		if (path.startsWith("/")) {
 			path = path.substring(1);
-		}
+		} // path = com/kq/di/autowired/
 		Set<Resource> result = doFindAllClassPathResources(path);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Resolved classpath location [" + location + "] to resources " + result);

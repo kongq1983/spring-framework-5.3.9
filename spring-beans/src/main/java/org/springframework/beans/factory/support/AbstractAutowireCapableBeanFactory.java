@@ -476,7 +476,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	// Implementation of relevant AbstractBeanFactory template methods
 	//---------------------------------------------------------------------
 
-	/**
+	/** todo 核心逻辑
 	 * Central method of this class: creates a bean instance,
 	 * populates the bean instance, applies post-processors, etc.
 	 * @see #doCreateBean
@@ -511,7 +511,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {  // InstantiationAwareBeanPostProcessor的前后处理 postProcessBeforeInstantiation
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse); // 实例化前:postProcessBeforeInstantiation
-			if (bean != null) {
+			if (bean != null) {  // 这里一般都返回null的  所以这里可以忽略实例化前 和 实例化后  如果bean返回不是null，则resolveBeforeInstantiation会处理实例化前和实例化后
 				return bean;
 			}
 		}
@@ -563,7 +563,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (instanceWrapper == null) { // todo 初始化 默认构造函数: instantiateBean
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
-		Object bean = instanceWrapper.getWrappedInstance(); // todo 得到bean 循环依赖 传入的就是这个bean
+		Object bean = instanceWrapper.getWrappedInstance(); // todo 原始bean*  得到bean 循环依赖 传入的就是这个bean
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
 			mbd.resolvedTargetType = beanType;
@@ -598,9 +598,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try { //todo 对bean进行填充，将各个属性值注入，其中，可能存在依赖于其他bean的属性，则会递归初始依赖bean
-			populateBean(beanName, mbd, instanceWrapper); // todo 没指定byName、byType，一般主要就是处理@Resrouce、@Autowired 注解
-			exposedObject = initializeBean(beanName, exposedObject, mbd); // 处理BeanPostProcessor的before、调用InitializingBean、处理BeanPostProcessor的after、init-method调用
-		}
+			populateBean(beanName, mbd, instanceWrapper); // todo 没指定byName、byType，一般主要就是处理@Resrouce、@Autowired 注解  todo 先实例化后  再数据填充
+			exposedObject = initializeBean(beanName, exposedObject, mbd); // 处理BeanPostProcessor的before、调用InitializingBean、处理BeanPostProcessor的after、init-method调用 todo 其实就是调用init函数
+		} // todo exposedObject后实例化后 有可能会被代理了
 		catch (Throwable ex) {
 			if (ex instanceof BeanCreationException && beanName.equals(((BeanCreationException) ex).getBeanName())) {
 				throw (BeanCreationException) ex;
@@ -614,7 +614,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (earlySingletonExposure) {
 			Object earlySingletonReference = getSingleton(beanName, false); // 如果没循环依赖 这里也是返回null
 			if (earlySingletonReference != null) {
-				if (exposedObject == bean) {
+				if (exposedObject == bean) { // exposedObject == bean 说明是原始bean (exposedObject有可能会被动态代理)
 					exposedObject = earlySingletonReference; // 注意这里 三级缓存过来的时候，会不会被getEarlyReference代理了
 				}
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
@@ -1354,7 +1354,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return new ConstructorResolver(this).autowireConstructor(beanName, mbd, ctors, explicitArgs);
 	}
 
-	/** todo 数据填充
+	/** todo 先实例化后  再数据填充
 	 * Populate the bean instance in the given BeanWrapper with the property values
 	 * from the bean definition.
 	 * @param beanName the name of the bean
@@ -1787,7 +1787,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) { // 除了ApplicationListenerDetector 起都直接返回bean
-			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);  // todo 实例化后
 		}
 
 		return wrappedBean;

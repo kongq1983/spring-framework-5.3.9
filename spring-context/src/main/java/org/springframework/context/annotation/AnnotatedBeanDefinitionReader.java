@@ -251,7 +251,7 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
-		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
+		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) { // springboot基于条件的都是这里判断的
 			return;
 		}
 
