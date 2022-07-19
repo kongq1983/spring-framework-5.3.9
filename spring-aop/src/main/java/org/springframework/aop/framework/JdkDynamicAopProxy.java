@@ -126,7 +126,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		return Proxy.newProxyInstance(classLoader, this.proxiedInterfaces, this);
 	}
 
-	/**
+	/** 判断被代理的接口中是否定义了equals()、hashCode()方法，如果程序员在接口中手动定义了这两个方法，则也会进行代理
 	 * Finds any {@link #equals} or {@link #hashCode} method that may be defined
 	 * on the supplied set of interfaces.
 	 * @param proxiedInterfaces the interfaces to introspect
@@ -141,7 +141,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 				if (AopUtils.isHashCodeMethod(method)) {
 					this.hashCodeDefined = true;
 				}
-				if (this.equalsDefined && this.hashCodeDefined) {
+				if (this.equalsDefined && this.hashCodeDefined) { // 否则这两个方法是不会走代理逻辑的
 					return;
 				}
 			}
@@ -160,10 +160,10 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		Object oldProxy = null;
 		boolean setProxyContext = false;
 
-		TargetSource targetSource = this.advised.targetSource;
+		TargetSource targetSource = this.advised.targetSource; // 拿到被代理对象
 		Object target = null;
 
-		try {
+		try { // 如果接口中没有定义equals()方法，那么则直接调用，不走代理
 			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
 				// The target does not implement the equals(Object) method itself.
 				return equals(args[0]);
@@ -174,16 +174,16 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			}
 			else if (method.getDeclaringClass() == DecoratingProxy.class) {
 				// There is only getDecoratedClass() declared -> dispatch to proxy config.
-				return AopProxyUtils.ultimateTargetClass(this.advised);
+				return AopProxyUtils.ultimateTargetClass(this.advised); // 得到代理对象的类型，而不是所实现的接口
 			}
 			else if (!this.advised.opaque && method.getDeclaringClass().isInterface() &&
 					method.getDeclaringClass().isAssignableFrom(Advised.class)) {
 				// Service invocations on ProxyConfig with the proxy config...
 				return AopUtils.invokeJoinpointUsingReflection(this.advised, method, args);
-			}
+			} // 也是直接调用Advised接口中的方法，不走代理逻辑 其实就是利用代理对象获取ProxyFactory中的信息
 
 			Object retVal;
-
+			// 如果ProxyFactory的exposeProxy为true,则将代理对象设置到currentProxy这个ThreadLocal中去
 			if (this.advised.exposeProxy) {
 				// Make invocation available if necessary.
 				oldProxy = AopContext.setCurrentProxy(proxy);
@@ -192,7 +192,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 
 			// Get as late as possible to minimize the time we "own" the target,
 			// in case it comes from a pool.
-			target = targetSource.getTarget();
+			target = targetSource.getTarget(); // 被代理对象和代理类
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
 			// Get the interception chain for this method.
@@ -204,7 +204,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 				// We can skip creating a MethodInvocation: just invoke the target directly
 				// Note that the final invoker must be an InvokerInterceptor so we know it does
 				// nothing but a reflective operation on the target, and no hot swapping or fancy proxying.
-				Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
+				Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args); // 如果没有Advice，则直接调用对应方法
 				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
 			}
 			else {

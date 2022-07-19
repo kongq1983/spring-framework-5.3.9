@@ -158,3 +158,9 @@ default Object postProcessBeforeInitialization(Object bean, String beanName)
 default Object postProcessAfterInitialization(Object bean, String beanName)
 
 =================================================================================================================
+
+DefaultListableBeanFactory
+
+BeanDefinitionRegistryPostProcessor
+
+ApplicationContextAwareProcessor

@@ -269,11 +269,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	@Override
 	@Nullable
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		RequestMappingInfo info = createRequestMappingInfo(method);
+		RequestMappingInfo info = createRequestMappingInfo(method); // 方法上是否有@RequestMapping 有则创建RequestMappingInfo 不存在则返回null
 		if (info != null) {
-			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
+			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType); //类上是否有@RequestMapping 有则创建RequestMappingInfo 不存在则返回null
 			if (typeInfo != null) {
-				info = typeInfo.combine(info);
+				info = typeInfo.combine(info); // 合并  /classpath/methodpath
 			}
 			String prefix = getPathPrefix(handlerType);
 			if (prefix != null) {

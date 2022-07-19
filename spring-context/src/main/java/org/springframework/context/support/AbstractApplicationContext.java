@@ -549,7 +549,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Prepare this context for refreshing.
 			prepareRefresh(); // 准备刷新  Prepare this context for refreshing. 初始化initPropertySources earlyApplicationListeners earlyApplicationEvents
 
-			// Tell the subclass to refresh the internal bean factory.
+			// Tell the subclass to refresh the internal bean factory.  告诉子类去刷新bean工厂
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory(); // 分刷新和不刷新的子类
 			// 上面一句  注册也只是将这些信息都保存到了注册中心(说到底核心是一个 beanName-> beanDefinition 的 map)
 			// Prepare the bean factory for use in this context.

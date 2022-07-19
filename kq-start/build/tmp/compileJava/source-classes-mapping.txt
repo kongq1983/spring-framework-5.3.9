@@ -2,7 +2,9 @@ com/kq/quickstart/service/UserService.java
  com.kq.quickstart.service.UserService
 com/kq/quickstart/service/AliasService.java
  com.kq.quickstart.service.AliasService
-com/kq/quickstart/QuickStartTest.java
- com.kq.quickstart.QuickStartTest
 com/kq/quickstart/config/AppConfig.java
  com.kq.quickstart.config.AppConfig
+com/kq/quickstart/QuickStartTest.java
+ com.kq.quickstart.QuickStartTest
+com/kq/quickstart/TestMemory.java
+ com.kq.quickstart.TestMemory

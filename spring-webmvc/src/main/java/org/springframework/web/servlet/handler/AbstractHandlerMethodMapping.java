@@ -218,8 +218,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #processCandidateBean
 	 * @see #handlerMethodsInitialized
 	 */
-	protected void initHandlerMethods() {
-		for (String beanName : getCandidateBeanNames()) {
+	protected void initHandlerMethods() { // afterPropertiesSet 调用这个
+		for (String beanName : getCandidateBeanNames()) { // 得到容器的所有beanName
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
 				processCandidateBean(beanName);
 			}
@@ -278,7 +278,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		if (handlerType != null) {
 			Class<?> userType = ClassUtils.getUserClass(handlerType);
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
-					(MethodIntrospector.MetadataLookup<T>) method -> {
+					(MethodIntrospector.MetadataLookup<T>) method -> { // 循环该hander所有方法
 						try {
 							return getMappingForMethod(method, userType);
 						}

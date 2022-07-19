@@ -438,7 +438,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 */
 	protected void exposeModelAsRequestAttributes(Map<String, Object> model,
 			HttpServletRequest request) throws Exception {
-
+		// 应用到request
 		model.forEach((name, value) -> {
 			if (value != null) {
 				request.setAttribute(name, value);

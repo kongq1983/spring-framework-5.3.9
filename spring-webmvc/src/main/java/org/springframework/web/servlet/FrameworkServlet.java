@@ -687,7 +687,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		wac.setServletContext(getServletContext());
 		wac.setServletConfig(getServletConfig());
 		wac.setNamespace(getNamespace());
-		wac.addApplicationListener(new SourceFilteringListener(wac, new ContextRefreshListener()));
+		wac.addApplicationListener(new SourceFilteringListener(wac, new ContextRefreshListener()));// ContextRefreshListener
 
 		// The wac environment's #initPropertySources will be called in any case when the context
 		// is refreshed; do it eagerly here to ensure servlet property sources are in place for
@@ -830,7 +830,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		((ConfigurableApplicationContext) wac).refresh();
 	}
 
-	/**
+	/** todo 接收ContextRefreshedEvent
 	 * Callback that receives refresh events from this servlet's WebApplicationContext.
 	 * <p>The default implementation calls {@link #onRefresh},
 	 * triggering a refresh of this servlet's context-dependent state.
