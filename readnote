@@ -120,3 +120,41 @@ FactoryBean
 ==================================================================================================================
 
 BeanDefinition的synthetic
+
+==================================================================================================================
+
+spring
+spring环境下的实例化、初始化和jvm中的含义是完全不一样的，这个需要从spring bean的生命周期说起
+spring bean的生命周期：
+
+1.实例化bean（这里对应jvm类加载->初始化全过程）
+2.populate bean(bean装载属性，属性注入依赖)
+
+3.bean的初始化
+执行Aware相关接口的set方法注入依赖
+执行BeanPostProcessors的前置方法
+@PostConstruct注解方法执行
+InitializingBean接口实现类(组件)的初始化方法afterPropertiesSet执行
+自己指定的init-method方法执行
+
+注册销毁方法
+4.使用Bean
+5.销毁Bean
+
+=================================================================================================================
+实例化:  InstantiationAwareBeanPostProcessor
+实例化前:
+default Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName)
+
+实例化后：
+default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException
+
+--------------------------------------------------------------------------------------------------------------
+初始化; BeanPostProcessor
+初始化前:
+default Object postProcessBeforeInitialization(Object bean, String beanName)
+
+初始化后:
+default Object postProcessAfterInitialization(Object bean, String beanName)
+
+=================================================================================================================

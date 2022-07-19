@@ -1100,8 +1100,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/** todo 实例化前
-	 * Apply before-instantiation post-processors, resolving whether there is a
-	 * before-instantiation shortcut for the specified bean.
+	 * Apply before-instantiation post-processors, resolving whether there is a  Apply实例化前的处理器，解析是否存在
+	 * before-instantiation shortcut for the specified bean.    指定bean的实例化前快捷方式
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
 	 * @return the shortcut-determined bean instance, or {@code null} if none
@@ -1114,7 +1114,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
-					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
+					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName); // 如果aop代理 则这里返回bean不是null AbstractAutoProxyCreator  AbstractAdvisorAutoProxyCreator
 					if (bean != null) {
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);  // 自己创建的bean 不会进入这里
 					}
@@ -1126,11 +1126,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition
-	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.
-	 * <p>Any returned object will be used as the bean instead of actually instantiating
-	 * the target bean. A {@code null} return value from the post-processor will
-	 * result in the target bean being instantiated.
+	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition            将 InstantiationAwareBeanPostProcessors 应用于指定的 bean 定义
+	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.    （按类和名称），调用他们的postProcessBeforeInstantiation方法
+	 * <p>Any returned object will be used as the bean instead of actually instantiating      任何返回的对象都将被用作bean  ，而不是实际实例化
+	 * the target bean. A {@code null} return value from the post-processor will              目标bean。 来自后处理器的 {@code null} 返回值将
+	 * result in the target bean being instantiated.                                          导致目标 bean 被实例化
 	 * @param beanClass the class of the bean to be instantiated
 	 * @param beanName the name of the bean
 	 * @return the bean object to use instead of a default instance of the target bean, or {@code null}
@@ -1374,10 +1374,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
-		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
-		// state of the bean before properties are set. This can be used, for example,
-		// to support styles of field injection. 这里会进来
-		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
+		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the   给任何 InstantiationAwareBeanPostProcessors 修改的机会
+		// state of the bean before properties are set. This can be used, for example,  设置属性之前bean的状态。 这可以用于
+		// to support styles of field injection. 例如,支持字段注入
+		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) { // InstantiationAwareBeanPostProcessor
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
 					return; //ConfigurationClassPostProcessor.ImportAwareBeanPostProcessor CommonAnnotationBeanPostProcessor AutowiredAnnotationBeanPostProcessor
