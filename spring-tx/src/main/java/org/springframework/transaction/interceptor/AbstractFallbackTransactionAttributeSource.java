@@ -106,24 +106,24 @@ public abstract class AbstractFallbackTransactionAttributeSource
 			return null;
 		}
 
-		// First, see if we have a cached value.
-		Object cacheKey = getCacheKey(method, targetClass);
-		TransactionAttribute cached = this.attributeCache.get(cacheKey);
-		if (cached != null) {
+		// First, see if we have a cached value. 获取缓存的key
+		Object cacheKey = getCacheKey(method, targetClass); // return new MethodClassKey(method, targetClass);
+		TransactionAttribute cached = this.attributeCache.get(cacheKey); // 从缓存中获取TransactionAttribute对象
+		if (cached != null) { // 缓存值不为空
 			// Value will either be canonical value indicating there is no transaction attribute,
 			// or an actual transaction attribute.
-			if (cached == NULL_TRANSACTION_ATTRIBUTE) {
+			if (cached == NULL_TRANSACTION_ATTRIBUTE) { // 特定的空对象
 				return null;
 			}
 			else {
-				return cached;
+				return cached; // 如果缓存值不为空，则直接返回缓存值
 			}
 		}
-		else {
+		else { // 缓存值为空
 			// We need to work it out.
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
-			if (txAttr == null) {
+			if (txAttr == null) { // 如果TransactionAttribute为空, 则缓存一个特定的空对象
 				this.attributeCache.put(cacheKey, NULL_TRANSACTION_ATTRIBUTE);
 			}
 			else {
@@ -136,7 +136,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 				if (logger.isTraceEnabled()) {
 					logger.trace("Adding transactional method '" + methodIdentification + "' with attribute: " + txAttr);
 				}
-				this.attributeCache.put(cacheKey, txAttr);
+				this.attributeCache.put(cacheKey, txAttr); // 添加缓存对象
 			}
 			return txAttr;
 		}
@@ -163,8 +163,8 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 */
 	@Nullable
 	protected TransactionAttribute computeTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
-		// Don't allow no-public methods as required.
-		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
+		// Don't allow no-public methods as required. allowPublicMethodsOnly==true && 如果目标方法不是public，则直接返回空，表示非事务执行
+		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) { // allowPublicMethodsOnly=true  只允许public方法
 			return null;
 		}
 
@@ -172,15 +172,15 @@ public abstract class AbstractFallbackTransactionAttributeSource
 		// If the target class is null, the method will be unchanged.
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
-		// First try is the method in the target class.
-		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
+		// First try is the method in the target class.  首先从目标方法寻找事务属性 调用AnnotationTransactionAttributeSource.determineTransactionAttribute
+		TransactionAttribute txAttr = findTransactionAttribute(specificMethod); // 其实就是解析@Transactional 变成TransactionAttribute
 		if (txAttr != null) {
-			return txAttr;
+			return txAttr; // 如果存在，则直接返回
 		}
 
-		// Second try is the transaction attribute on the target class.
+		// Second try is the transaction attribute on the target class.  第二步从目标类上找事务属性 （如果上面-方法上没找到） 调用AnnotationTransactionAttributeSource.determineTransactionAttribute
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
-		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
+		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) { // isUserLevelMethod=true  用户定义的方法 （方法上不存在@Transactional，该方法是用户定义的方法，并且类上存在@Transactional）
 			return txAttr;
 		}
 

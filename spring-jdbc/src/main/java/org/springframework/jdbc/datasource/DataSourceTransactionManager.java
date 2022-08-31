@@ -279,7 +279,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			// Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
 			// so we don't want to do it unnecessarily (for example if we've explicitly
 			// configured the connection pool to set it already).
-			if (con.getAutoCommit()) {
+			if (con.getAutoCommit()) { // 关闭数据自动提交，如果是只读事务，则设置为只读
 				txObject.setMustRestoreAutoCommit(true);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Switching JDBC Connection [" + con + "] to manual commit");
@@ -292,12 +292,12 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 			int timeout = determineTimeout(definition);
 			if (timeout != TransactionDefinition.TIMEOUT_DEFAULT) {
-				txObject.getConnectionHolder().setTimeoutInSeconds(timeout);
+				txObject.getConnectionHolder().setTimeoutInSeconds(timeout); // 设置超时时间
 			}
 
 			// Bind the connection holder to the thread.
-			if (txObject.isNewConnectionHolder()) {
-				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
+			if (txObject.isNewConnectionHolder()) { // 是新连接
+				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder()); // 将数据库连接绑定到当前线程
 			}
 		}
 
