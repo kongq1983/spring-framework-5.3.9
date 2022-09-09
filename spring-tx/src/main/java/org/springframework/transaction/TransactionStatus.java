@@ -19,7 +19,7 @@ package org.springframework.transaction;
 import java.io.Flushable;
 
 /**
- * Representation of the status of a transaction.
+ * Representation of the status of a transaction.  事务状态的表示
  *
  * <p>Transactional code can use this to retrieve status information,
  * and to programmatically request a rollback (instead of throwing

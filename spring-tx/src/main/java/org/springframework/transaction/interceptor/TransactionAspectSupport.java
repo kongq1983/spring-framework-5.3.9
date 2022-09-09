@@ -392,7 +392,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
-			finally { // 清理事务信息
+			finally { // 清理事务信息  如果有旧事务，则threadlocal恢复旧事务，没有则设置null
 				cleanupTransactionInfo(txInfo);
 			}
 
@@ -618,16 +618,16 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		TransactionInfo txInfo = new TransactionInfo(tm, txAttr, joinpointIdentification);
 		if (txAttr != null) {
-			// We need a transaction for this method...
+			// We need a transaction for this method...  我们需要这个方法的事务
 			if (logger.isTraceEnabled()) {
 				logger.trace("Getting transaction for [" + txInfo.getJoinpointIdentification() + "]");
-			}
+			} // 如果不兼容的 tx 已经存在，事务管理器将标记错误
 			// The transaction manager will flag an error if an incompatible tx already exists.
 			txInfo.newTransactionStatus(status);
 		}
 		else {
-			// The TransactionInfo.hasTransaction() method will return false. We created it only
-			// to preserve the integrity of the ThreadLocal stack maintained in this class.
+			// The TransactionInfo.hasTransaction() method will return false. We created it only  方法将返回 false。 我们只创造了它
+			// to preserve the integrity of the ThreadLocal stack maintained in this class.  保持此类中维护的 ThreadLocal 堆栈的完整性
 			if (logger.isTraceEnabled()) {
 				logger.trace("No need to create transaction for [" + joinpointIdentification +
 						"]: This method is not transactional.");
@@ -637,7 +637,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// We always bind the TransactionInfo to the thread, even if we didn't create
 		// a new transaction here. This guarantees that the TransactionInfo stack
 		// will be managed correctly even if no transaction was created by this aspect.
-		txInfo.bindToThread(); // 绑定到当前线程
+		txInfo.bindToThread(); // 绑定到当前线程  把txInfo放到transactionInfoHolder
 		return txInfo;
 	}
 
@@ -700,7 +700,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		}
 	}
 
-	/**
+	/** 恢复oldTransactionInfo
 	 * Reset the TransactionInfo ThreadLocal.
 	 * <p>Call this in all cases: exception or normal return!
 	 * @param txInfo information about the current transaction (may be {@code null})
@@ -713,8 +713,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 
 	/**
-	 * Opaque object used to hold transaction information. Subclasses
-	 * must pass it back to methods on this class, but not see its internals.
+	 * Opaque object used to hold transaction information. Subclasses       用于保存事务信息的不透明对象。 子类
+	 * must pass it back to methods on this class, but not see its internals.  必须将其传递回此类的方法，但看不到其内部
 	 */
 	protected static final class TransactionInfo {
 
@@ -775,16 +775,16 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			return (this.transactionStatus != null);
 		}
 
-		private void bindToThread() {
-			// Expose current TransactionStatus, preserving any existing TransactionStatus
-			// for restoration after this transaction is complete.
-			this.oldTransactionInfo = transactionInfoHolder.get();
+		private void bindToThread() {// preserving:保存   Expose: 暴露
+			// Expose current TransactionStatus, preserving any existing TransactionStatus  公开当前的TransactionStatus，保留任何现有的TransactionStatus
+			// for restoration after this transaction is complete.      以便在此事务完成后恢复
+			this.oldTransactionInfo = transactionInfoHolder.get();  // 从当前线程取出事务信息  相当于旧事务了，把旧事务 放到新事务的oldTransactionInfo属性，然后把新事务
 			transactionInfoHolder.set(this);
 		}
 
-		private void restoreThreadLocalStatus() {
-			// Use stack to restore old transaction TransactionInfo.
-			// Will be null if none was set.
+		private void restoreThreadLocalStatus() { // 恢复oldTransactionInfo
+			// Use stack to restore old transaction TransactionInfo.  使用堆栈恢复旧事务TransactionInfo
+			// Will be null if none was set.  如果没有设置，则为空
 			transactionInfoHolder.set(this.oldTransactionInfo);
 		}
 

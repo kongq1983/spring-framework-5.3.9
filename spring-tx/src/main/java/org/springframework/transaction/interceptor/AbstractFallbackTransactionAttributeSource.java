@@ -186,12 +186,12 @@ public abstract class AbstractFallbackTransactionAttributeSource
 
 		if (specificMethod != method) {
 			// Fallback is to look at the original method.
-			txAttr = findTransactionAttribute(method);
+			txAttr = findTransactionAttribute(method);  // 先从原始方法找注解
 			if (txAttr != null) {
 				return txAttr;
 			}
 			// Last fallback is the class of the original method.
-			txAttr = findTransactionAttribute(method.getDeclaringClass());
+			txAttr = findTransactionAttribute(method.getDeclaringClass()); // 找不到，则找类上的注解
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 				return txAttr;
 			}
