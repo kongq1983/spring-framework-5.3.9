@@ -166,8 +166,8 @@ public class InvocableHandlerMethod extends HandlerMethod {
 			if (!this.resolvers.supportsParameter(parameter)) {
 				throw new IllegalStateException(formatArgumentError(parameter, "No suitable resolver"));
 			}
-			try {
-				args[i] = this.resolvers.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
+			try { // 如果是RequestBody 则 resolvers = RequestResponseBodyMethodProcessor
+				args[i] = this.resolvers.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory); // 参数校验都在这里
 			}
 			catch (Exception ex) {
 				// Leave stack trace for later, exception may actually be resolved and handled...

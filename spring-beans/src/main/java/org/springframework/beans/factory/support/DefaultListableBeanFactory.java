@@ -990,33 +990,33 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
-		if (existingDefinition != null) {
-			if (!isAllowBeanDefinitionOverriding()) { // 默认allowBeanDefinitionOverriding=true
-				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
+		if (existingDefinition != null) { // 已存在bean定义
+			if (!isAllowBeanDefinitionOverriding()) { // 默认allowBeanDefinitionOverriding=true   spring.main.allow-bean-definition-overriding
+				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition); // 如果默认allowBeanDefinitionOverriding=false，则抛异常  springboot默认是false
 			}
-			else if (existingDefinition.getRole() < beanDefinition.getRole()) {
-				// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE
+			else if (existingDefinition.getRole() < beanDefinition.getRole()) {  // 到这里，则allowBeanDefinitionOverriding=true
+				// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE   bean定义容器里的BeanDefinition  优先级小于  目前要注册的bean定义
 				if (logger.isInfoEnabled()) {
 					logger.info("Overriding user-defined bean definition for bean '" + beanName +
 							"' with a framework-generated bean definition: replacing [" +
 							existingDefinition + "] with [" + beanDefinition + "]");
 				}
 			}
-			else if (!beanDefinition.equals(existingDefinition)) {
+			else if (!beanDefinition.equals(existingDefinition)) { // 如果不相等
 				if (logger.isDebugEnabled()) {
 					logger.debug("Overriding bean definition for bean '" + beanName +
 							"' with a different definition: replacing [" + existingDefinition +
 							"] with [" + beanDefinition + "]");
 				}
 			}
-			else {
+			else { // equals相等
 				if (logger.isTraceEnabled()) {
 					logger.trace("Overriding bean definition for bean '" + beanName +
 							"' with an equivalent definition: replacing [" + existingDefinition +
 							"] with [" + beanDefinition + "]");
 				}
 			}
-			this.beanDefinitionMap.put(beanName, beanDefinition);
+			this.beanDefinitionMap.put(beanName, beanDefinition);  // 直接用新的替换目前容器中存在的bean定义
 		}
 		else {
 			if (hasBeanCreationStarted()) {

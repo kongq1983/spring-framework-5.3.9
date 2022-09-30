@@ -388,12 +388,12 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				retVal = invocation.proceedWithInvocation(); // 执行目标方法
 			}
 			catch (Throwable ex) {
-				// target invocation exception 回滚事务
+				// target invocation exception 提交或回滚  依赖于配置
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
 			finally { // 清理事务信息  如果有旧事务，则threadlocal恢复旧事务，没有则设置null
-				cleanupTransactionInfo(txInfo);
+				cleanupTransactionInfo(txInfo); // 如果存在旧事务，则恢复旧事务
 			}
 
 			if (retVal != null && vavrPresent && VavrDelegate.isVavrTry(retVal)) {
@@ -601,7 +601,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		} // 封装事务信息对象，并且将事务信息对象绑定到当前线程
-		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
+		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);  // 没有事务信息，直接到这里
 	}
 
 	/**  封装事务信息对象，并且将事务信息对象绑定到当前线程
@@ -625,7 +625,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			// The transaction manager will flag an error if an incompatible tx already exists.
 			txInfo.newTransactionStatus(status);
 		}
-		else {
+		else { // 没有事务信息
 			// The TransactionInfo.hasTransaction() method will return false. We created it only  方法将返回 false。 我们只创造了它
 			// to preserve the integrity of the ThreadLocal stack maintained in this class.  保持此类中维护的 ThreadLocal 堆栈的完整性
 			if (logger.isTraceEnabled()) {
@@ -657,7 +657,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 	/**
 	 * Handle a throwable, completing the transaction.
-	 * We may commit or roll back, depending on the configuration.
+	 * We may commit or roll back, depending on the configuration.  提交或回滚  依赖于配置
 	 * @param txInfo information about the current transaction
 	 * @param ex throwable encountered
 	 */
@@ -667,9 +667,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				logger.trace("Completing transaction for [" + txInfo.getJoinpointIdentification() +
 						"] after exception: " + ex);
 			}
-			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {
+			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) { // (ex instanceof RuntimeException || ex instanceof Error)
 				try {
-					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());
+					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus()); // 回滚事务
 				}
 				catch (TransactionSystemException ex2) {
 					logger.error("Application exception overridden by rollback exception", ex);
@@ -685,7 +685,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				// We don't roll back on this exception.
 				// Will still roll back if TransactionStatus.isRollbackOnly() is true.
 				try {
-					txInfo.getTransactionManager().commit(txInfo.getTransactionStatus());
+					txInfo.getTransactionManager().commit(txInfo.getTransactionStatus());  // 提交事务
 				}
 				catch (TransactionSystemException ex2) {
 					logger.error("Application exception overridden by commit exception", ex);

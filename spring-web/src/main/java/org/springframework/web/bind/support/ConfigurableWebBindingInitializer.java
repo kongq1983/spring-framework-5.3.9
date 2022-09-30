@@ -204,7 +204,7 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer 
 			binder.setBindingErrorProcessor(this.bindingErrorProcessor);
 		}
 		if (this.validator != null && binder.getTarget() != null &&
-				this.validator.supports(binder.getTarget().getClass())) {
+				this.validator.supports(binder.getTarget().getClass())) {  // spring mvc校验框架
 			binder.setValidator(this.validator);
 		}
 		if (this.conversionService != null) {
