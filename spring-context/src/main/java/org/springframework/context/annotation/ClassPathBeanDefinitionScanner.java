@@ -336,7 +336,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		if (!this.registry.containsBeanDefinition(beanName)) { // 不存在该 beanName
 			return true;
 		}
-		BeanDefinition existingDef = this.registry.getBeanDefinition(beanName); // 容器中拿BeanDefinition
+		BeanDefinition existingDef = this.registry.getBeanDefinition(beanName); // 容器中拿BeanDefinition  到这里说明开始第2次注册bean定义了
 		BeanDefinition originatingDef = existingDef.getOriginatingBeanDefinition();
 		if (originatingDef != null) {
 			existingDef = originatingDef;
@@ -360,8 +360,8 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @return whether the definitions are considered as compatible, with the
 	 * new definition to be skipped in favor of the existing definition
 	 */
-	protected boolean isCompatible(BeanDefinition newDefinition, BeanDefinition existingDefinition) {
-		return (!(existingDefinition instanceof ScannedGenericBeanDefinition) ||  // explicitly registered overriding bean
+	protected boolean isCompatible(BeanDefinition newDefinition, BeanDefinition existingDefinition) { // (!(a>b) || (c>d) ||  (e>f))   =  ((!(a>b)) || (c>d) ||  (e>f))
+		return (!(existingDefinition instanceof ScannedGenericBeanDefinition) ||  // explicitly registered overriding bean    注意!，只对第1个条件有效  扫描的都是ScannedGenericBeanDefinition
 				(newDefinition.getSource() != null && newDefinition.getSource().equals(existingDefinition.getSource())) ||  // 扫描同个文件2次 scanned same file twice
 				newDefinition.equals(existingDefinition));  // 扫描同等class2次 (比如不同包中的class(相同包名、相同类名)) scanned equivalent class twice
 	} // newDefinition.getSource() : FileSystemSource
